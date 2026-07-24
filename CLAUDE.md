@@ -49,3 +49,13 @@ schedule into the URL hash (`#r=…`) with a compact, dependency-free codec, and
 (grid only, no summary). Because it's hash-based it needs no server-side routing
 (works on plain GitHub Pages) and never writes to `localStorage`; a decoded link
 is untrusted and re-validated with `isValidSchedule`.
+
+**Rules** are user-defined checks in their own store, mirroring presets:
+`rulesReducer` + `RulesContext` + `usePersistedRules` (key
+`shift-scheduler:v1:rules`), so editing rules never touches the schedule or its
+undo history. `src/lib/rules.ts` is the pure engine
+(`evaluateRules(schedule, rules) => Violation[]`); `useViolations` memoizes it in
+the render path. Violations surface **screen-only** via `WarningsPanel` and the
+`--alert` cell/day markers (`.cell-alert` / `.day-alert`, reset under
+`@media print`) — this is the reserved `--alert` channel's intended use. Stored
+rules are untrusted and re-validated with `isValidRule`.

@@ -22,6 +22,7 @@ interface PersonCardProps {
   presets: ShiftPreset[];
   isDuplicate: boolean;
   readOnly: boolean;
+  alertedCells?: ReadonlySet<string>;
 }
 
 function PersonCard({
@@ -32,6 +33,7 @@ function PersonCard({
   presets,
   isDuplicate,
   readOnly,
+  alertedCells,
 }: PersonCardProps) {
   const { startDate, weekCount } = schedule;
   const summary = summarizePerson(schedule, person.id);
@@ -107,7 +109,11 @@ function PersonCard({
                 <div
                   key={dayIndex}
                   data-cellkey={cellKey(person.id, dayIndex)}
-                  className={`flex items-stretch border-b border-rule last:border-b-0 ${fillClass(assignment, displayMode)}`}
+                  className={`flex items-stretch border-b border-rule last:border-b-0 ${fillClass(assignment, displayMode)}${
+                    alertedCells?.has(cellKey(person.id, dayIndex))
+                      ? ' cell-alert'
+                      : ''
+                  }`}
                 >
                   <div className="flex w-24 shrink-0 flex-col justify-center px-3 py-1">
                     <span className="text-sm font-semibold leading-tight">
@@ -146,7 +152,11 @@ function PersonCard({
 }
 
 /** The phone layout: one card per person, days stacked as full-width rows. */
-export function MobileSchedule() {
+export function MobileSchedule({
+  alertedCells,
+}: {
+  alertedCells?: ReadonlySet<string>;
+}) {
   const { schedule, dispatch, readOnly } = useSchedule();
   const { displayMode } = useDisplayMode();
   const { presets } = usePresets();
@@ -164,6 +174,7 @@ export function MobileSchedule() {
           presets={presets}
           isDuplicate={dupes.has(normalizeName(person.name))}
           readOnly={readOnly}
+          alertedCells={alertedCells}
         />
       ))}
     </div>

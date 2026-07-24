@@ -54,6 +54,26 @@
   }
 }
 
+/*
+ * Persistent rule-warning markers, using the reserved --alert channel: a ring on
+ * a flagged cell, an underline on an under-covered day header. Screen-only, so
+ * the printed roster stays clean of editing aids.
+ */
+.cell-alert {
+  box-shadow: inset 0 0 0 2px #c2410c;
+}
+
+.day-alert {
+  box-shadow: inset 0 -3px 0 #c2410c;
+}
+
+@media print {
+  .cell-alert,
+  .day-alert {
+    box-shadow: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .cell-flash {
     animation-duration: 1.6s;

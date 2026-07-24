@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { useSchedule } from '../state/ScheduleContext.tsx';
 import { useDisplayMode } from '../state/DisplayModeContext.tsx';
 import { useView } from '../state/ViewContext.tsx';
+import { useViolations } from '../state/useViolations.ts';
 import { useUndoRedoShortcuts } from '../hooks/useUndoRedoShortcuts.ts';
 import { ConfirmDialog } from './ConfirmDialog.tsx';
 import { PresetManager } from './PresetManager.tsx';
+import { RulesManager } from './RulesManager.tsx';
 import { PrintDialog } from './PrintDialog.tsx';
 import { ShareModal } from './ShareModal.tsx';
 
@@ -32,10 +34,12 @@ export function Toolbar() {
   const { schedule, dispatch, canUndo, canRedo, undo, redo } = useSchedule();
   const { displayMode, setDisplayMode } = useDisplayMode();
   const { view, setView } = useView();
+  const violations = useViolations();
   const { startDate, weekCount, people } = schedule;
   const canCopyWeek = weekCount === 2 && people.length > 0;
   const [confirmClearOpen, setConfirmClearOpen] = useState(false);
   const [presetsOpen, setPresetsOpen] = useState(false);
+  const [rulesOpen, setRulesOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [printOpen, setPrintOpen] = useState(false);
 
@@ -214,6 +218,22 @@ export function Toolbar() {
             </button>
             <button
               type="button"
+              onClick={() => setRulesOpen(true)}
+              title="Set up coverage and rule checks"
+              className={secondaryButton}
+            >
+              Rules…
+              {violations.length > 0 && (
+                <span
+                  aria-label={`${violations.length} rule warnings`}
+                  className="ml-0.5 inline-flex min-w-[1.25rem] items-center justify-center rounded-full bg-alert px-1 text-xs font-semibold text-paper"
+                >
+                  {violations.length}
+                </span>
+              )}
+            </button>
+            <button
+              type="button"
               onClick={() => dispatch({ type: 'COPY_WEEK_1_TO_2' })}
               disabled={!canCopyWeek}
               title={
@@ -271,6 +291,8 @@ export function Toolbar() {
       />
 
       <PresetManager open={presetsOpen} onClose={() => setPresetsOpen(false)} />
+
+      <RulesManager open={rulesOpen} onClose={() => setRulesOpen(false)} />
 
       <PrintDialog
         open={printOpen}

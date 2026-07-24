@@ -10,9 +10,17 @@ import { PersonRow } from './PersonRow.tsx';
 interface WeekTableProps {
   /** 0 for the first week, 1 for the second. */
   weekIndex: number;
+  /** Cell keys flagged by a rule warning (the --alert ring). */
+  alertedCells?: ReadonlySet<string>;
+  /** Day indices whose header should show an under-coverage marker. */
+  alertedDays?: ReadonlySet<number>;
 }
 
-export function WeekTable({ weekIndex }: WeekTableProps) {
+export function WeekTable({
+  weekIndex,
+  alertedCells,
+  alertedDays,
+}: WeekTableProps) {
   const { schedule, dispatch, readOnly } = useSchedule();
   const { displayMode } = useDisplayMode();
   const { presets } = usePresets();
@@ -46,14 +54,18 @@ export function WeekTable({ weekIndex }: WeekTableProps) {
                 Name
               </th>
               {Array.from({ length: DAYS_PER_WEEK }, (_, offset) => {
-                const header = formatDayHeader(
-                  addDays(startDate, firstDay + offset),
-                );
+                const dayIndex = firstDay + offset;
+                const header = formatDayHeader(addDays(startDate, dayIndex));
+                const dayAlerted = alertedDays?.has(dayIndex) ?? false;
                 return (
                   <th
                     key={offset}
                     scope="col"
-                    className="sticky top-0 z-10 min-w-[8rem] border border-rule border-b-ink/80 bg-paper px-2 py-1 text-center"
+                    data-dayindex={dayIndex}
+                    title={dayAlerted ? 'Below required coverage' : undefined}
+                    className={`sticky top-0 z-10 min-w-[8rem] border border-rule border-b-ink/80 bg-paper px-2 py-1 text-center${
+                      dayAlerted ? ' day-alert' : ''
+                    }`}
                   >
                     <span className="block text-sm font-semibold">
                       {header.weekday}
@@ -80,6 +92,7 @@ export function WeekTable({ weekIndex }: WeekTableProps) {
                 armedPreset={armedPreset}
                 isDuplicate={isDuplicate(person.name)}
                 readOnly={readOnly}
+                alertedCells={alertedCells}
               />
             ))}
           </tbody>

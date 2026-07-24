@@ -38,6 +38,7 @@ lives in your browser.
 - 🔒 **Yours only**: no login, no cloud, no cookies; nothing you type is uploaded to a server.
 - 🔗 **Easy to share**: send a view-only link your team can open and print, no account needed.
 - ⚡ **Quick to fill**: reusable presets, click-to-paint, and proper undo/redo.
+- 🚦 **Catches mistakes**: set your own checks (coverage, rest, overtime) and it flags what breaks them on screen.
 
 ## What it does
 
@@ -46,6 +47,7 @@ lives in your browser.
 | **One or two weeks**             | Pick a Monday and build a single week or a full fortnight.                                                                                                              |
 | **Shifts as start + length**     | You choose when a shift starts and how long it runs, so an overnight (11 PM → 7 AM) is easy to enter and the hours always add up.                                       |
 | **Off, PTO, holiday**            | Mark a day as time off instead of a shift.                                                                                                                              |
+| **Rules and warnings**           | Turn on your own checks (minimum coverage, rest between shifts, weekly hours, days in a row, and more) and the roster flags whatever breaks them, on screen only.       |
 | **Presets**                      | Save the shifts you use all the time (Day, Evening, Night, whatever you like) and drop them in with a click. They're fully editable and stick around between schedules. |
 | **Paint them in** _(on desktop)_ | Pick a preset, then click across the grid to fill cells with it.                                                                                                        |
 | **Undo and redo**                | The usual ⌘Z / Ctrl+Z. Whatever you change flashes and scrolls into view, so you don't lose your spot.                                                                  |
@@ -77,6 +79,8 @@ lives in your browser.
 7. **Check the hours** under **View → Summary**.
 8. **Print** with **Print / PDF**. Pick whether to include just the schedule or the schedule plus the hours page, then choose _Save as PDF_ (A4 landscape). With both, page one is the grid and page two is the summary.
 9. **Share it** by clicking **Share link** and pasting the copied link in your team chat. Anyone who opens it gets a read-only roster to view and print (grid only, no summary), and it never disturbs their own saved schedule.
+
+Want it to catch mistakes? Open **Rules…** and switch on the checks you care about: minimum coverage, rest between shifts, weekly hours, days in a row, and more. Each is yours to configure and can apply to everyone or to specific people. Anything that breaks a rule is flagged on screen (never on the printout), and clicking a warning jumps you straight to it.
 
 Already built week one? **Copy week 1 → 2** mirrors it so you only tweak the differences.
 

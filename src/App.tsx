@@ -11,6 +11,8 @@ import { DisplayModeProvider } from './state/DisplayModeContext.tsx';
 import { ViewProvider, useView } from './state/ViewContext.tsx';
 import { PresetsProvider } from './state/PresetsContext.tsx';
 import { PaintProvider } from './state/PaintContext.tsx';
+import { RulesProvider } from './state/RulesContext.tsx';
+import { useViolations } from './state/useViolations.ts';
 import { decodeShare } from './lib/shareCodec.ts';
 import { usePrintFilename } from './hooks/usePrintFilename.ts';
 import { Toolbar } from './components/Toolbar.tsx';
@@ -18,6 +20,7 @@ import { WeekTable } from './components/WeekTable.tsx';
 import { MobileSchedule } from './components/MobileSchedule.tsx';
 import { PaintBar } from './components/PaintBar.tsx';
 import { UndoFlash } from './components/UndoFlash.tsx';
+import { WarningsPanel } from './components/WarningsPanel.tsx';
 import { SummaryView } from './components/SummaryView.tsx';
 import { SharedRosterView } from './components/SharedRosterView.tsx';
 
@@ -46,6 +49,22 @@ function ScheduleDocument() {
   const { startDate, weekCount, people } = schedule;
   const lastDayIndex = weekCount * DAYS_PER_WEEK - 1;
 
+  // Rule warnings, and the cells / day headers to mark with the --alert channel.
+  const violations = useViolations();
+  const alertedCells = useMemo(
+    () => new Set(violations.flatMap((violation) => violation.cellKeys)),
+    [violations],
+  );
+  const alertedDays = useMemo(
+    () =>
+      new Set(
+        violations
+          .filter((violation) => violation.ruleType === 'coverageMin')
+          .flatMap((violation) => violation.dayIndices),
+      ),
+    [violations],
+  );
+
   // The printed document's title (custom, or the schedule default).
   const customTitle = (schedule.title ?? '').trim();
   const effectiveTitle = customTitle || DEFAULT_SCHEDULE_TITLE;
@@ -60,6 +79,9 @@ function ScheduleDocument() {
 
   return (
     <main className="mx-auto max-w-[1400px] px-4 py-6 md:px-6">
+      {/* Rule warnings — screen only, above the document. */}
+      <WarningsPanel violations={violations} />
+
       {/* Page-1 document title: shown on the Grid view and always in print. */}
       <header className={`mb-5 ${view === 'grid' ? '' : 'hidden'} print:block`}>
         <h2 className="hidden text-lg font-semibold print:block">
@@ -89,11 +111,16 @@ function ScheduleDocument() {
             <PaintBar />
             <div className="hidden space-y-8 md:block print:block">
               {Array.from({ length: weekCount }, (_, weekIndex) => (
-                <WeekTable key={weekIndex} weekIndex={weekIndex} />
+                <WeekTable
+                  key={weekIndex}
+                  weekIndex={weekIndex}
+                  alertedCells={alertedCells}
+                  alertedDays={alertedDays}
+                />
               ))}
             </div>
             <div className="md:hidden print:hidden">
-              <MobileSchedule />
+              <MobileSchedule alertedCells={alertedCells} />
             </div>
           </section>
 
@@ -144,11 +171,13 @@ export default function App() {
         <PresetsProvider>
           <PaintProvider>
             <ScheduleProvider>
-              <div className="min-h-screen bg-paper font-sans text-ink">
-                <Toolbar />
-                <ScheduleDocument />
-                <UndoFlash />
-              </div>
+              <RulesProvider>
+                <div className="min-h-screen bg-paper font-sans text-ink">
+                  <Toolbar />
+                  <ScheduleDocument />
+                  <UndoFlash />
+                </div>
+              </RulesProvider>
             </ScheduleProvider>
           </PaintProvider>
         </PresetsProvider>

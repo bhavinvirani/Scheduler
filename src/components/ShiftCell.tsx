@@ -25,6 +25,8 @@ interface ShiftCellProps {
   readOnly?: boolean;
   /** Blocks editing/painting until the person has a name. */
   disabled?: boolean;
+  /** Marks the cell as part of a rule warning (a screen-only --alert ring). */
+  alerted?: boolean;
 }
 
 function ShiftCellComponent({
@@ -38,8 +40,11 @@ function ShiftCellComponent({
   cellLabel,
   readOnly = false,
   disabled = false,
+  alerted = false,
 }: ShiftCellProps) {
-  const tdClass = `border border-rule p-0 align-top ${fillClass(assignment, displayMode)}`;
+  const tdClass = `border border-rule p-0 align-top ${fillClass(assignment, displayMode)}${
+    alerted ? ' cell-alert' : ''
+  }`;
 
   if (readOnly) {
     return (

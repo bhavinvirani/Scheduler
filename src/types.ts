@@ -50,6 +50,72 @@ export interface ShiftPreset {
   duration: Minutes;
 }
 
+/**
+ * A scheduling rule the user turns on and configures. Rules are user-defined
+ * (a catalog of parameterized types, not hardcoded thresholds) and live in their
+ * own store, like presets — so they persist across schedules and never touch the
+ * schedule's undo history. The pure engine in `lib/rules.ts` turns a schedule +
+ * these rules into a list of `Violation`s the UI surfaces with the reserved
+ * `--alert` channel.
+ */
+export type RuleType =
+  | 'coverageMin'
+  | 'restHours'
+  | 'weeklyHoursMax'
+  | 'weeklyHoursMin'
+  | 'consecutiveDaysMax'
+  | 'shiftsPerWeekMax'
+  | 'daysOffPerWeekMin';
+
+/** Which calendar days a coverage rule applies to. */
+export type CoverageDays = 'all' | 'weekdays' | 'weekends';
+
+/**
+ * Who a per-person rule checks: everyone, or a chosen set of people (by UUID —
+ * never the array index). A person removed from the roster simply stops matching.
+ */
+export type RuleScope = { kind: 'all' } | { kind: 'people'; ids: string[] };
+
+interface RuleCommon {
+  /** crypto.randomUUID(). Stable identity — never the array index. */
+  id: string;
+  /** A disabled rule stays in the library but is skipped by the engine. */
+  enabled: boolean;
+}
+
+export type Rule =
+  | (RuleCommon & {
+      type: 'coverageMin';
+      minPeople: number;
+      days: CoverageDays;
+    })
+  | (RuleCommon & { type: 'restHours'; minHours: number; scope: RuleScope })
+  | (RuleCommon & {
+      type: 'weeklyHoursMax';
+      maxHours: number;
+      scope: RuleScope;
+    })
+  | (RuleCommon & {
+      type: 'weeklyHoursMin';
+      minHours: number;
+      scope: RuleScope;
+    })
+  | (RuleCommon & {
+      type: 'consecutiveDaysMax';
+      maxDays: number;
+      scope: RuleScope;
+    })
+  | (RuleCommon & {
+      type: 'shiftsPerWeekMax';
+      maxShifts: number;
+      scope: RuleScope;
+    })
+  | (RuleCommon & {
+      type: 'daysOffPerWeekMin';
+      minDays: number;
+      scope: RuleScope;
+    });
+
 export interface Schedule {
   /** Schema version. Bump on any breaking change; migrate on load. */
   version: 1;

@@ -2,7 +2,7 @@ import type { Dispatch } from 'react';
 import type { Person, Schedule, ShiftPreset } from '../types.ts';
 import type { Action } from '../state/scheduleReducer.ts';
 import type { DisplayMode } from '../state/DisplayModeContext.tsx';
-import { getAssignment } from '../state/scheduleReducer.ts';
+import { cellKey, getAssignment } from '../state/scheduleReducer.ts';
 import { DAYS_PER_WEEK } from '../constants.ts';
 import { addDays, formatDayHeader } from '../lib/dates.ts';
 import { ShiftCell } from './ShiftCell.tsx';
@@ -23,6 +23,8 @@ interface PersonRowProps {
   isDuplicate: boolean;
   /** Shared view-only roster: render the name static, no input or remove. */
   readOnly?: boolean;
+  /** Cell keys currently flagged by a rule warning, for the --alert ring. */
+  alertedCells?: ReadonlySet<string>;
 }
 
 export function PersonRow({
@@ -36,6 +38,7 @@ export function PersonRow({
   armedPreset,
   isDuplicate,
   readOnly = false,
+  alertedCells,
 }: PersonRowProps) {
   const firstDay = weekIndex * DAYS_PER_WEEK;
 
@@ -117,6 +120,7 @@ export function PersonRow({
             cellLabel={`${person.name || 'Unnamed'} — ${header.weekday} ${header.date}`}
             readOnly={readOnly}
             disabled={!readOnly && person.name.trim() === ''}
+            alerted={alertedCells?.has(cellKey(person.id, dayIndex)) ?? false}
           />
         );
       })}
