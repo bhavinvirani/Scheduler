@@ -59,6 +59,10 @@ lives in your browser.
 | **Saves itself, works offline**  | Everything is kept in your browser and there's nothing to sign into.                                                                                                                          |
 | **Share a view-only link**       | Send a link and your team opens a read-only roster they can view and print. No account or app, and it never touches their own saved schedule.                                                 |
 
+**Rules you set, checked as you build:** coverage, rest between shifts, weekly hours, days in a row. Anything that breaks a rule is flagged on screen (never on the printout), with the offending cells ringed and a list you can click to jump to each.
+
+![Rule warnings panel listing the issues, with the affected cells ringed and the under-covered day marked](docs/screenshots/rules.png)
+
 <table>
 <tr>
 <td width="62%"><b>The hours page (prints as page 2)</b><br/><img src="docs/screenshots/summary.png" alt="Hours summary page" /></td>

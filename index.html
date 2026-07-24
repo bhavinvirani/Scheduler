@@ -16,11 +16,11 @@
     </title>
     <meta
       name="description"
-      content="A free, offline shift scheduler. Build a two-week staff roster (rota) in your browser and print it straight to PDF. No sign-up, no server — your data stays on your device."
+      content="A free, offline shift scheduler. Build a two-week staff roster in your browser, check it against your own coverage and rest rules, back it up to a file, and print straight to PDF. No sign-up, no server, your data stays on your device."
     />
     <meta
       name="keywords"
-      content="shift scheduler, staff roster maker, rota maker, employee schedule, work schedule template, shift planner, print schedule to PDF, free rota template, staff scheduling app"
+      content="shift scheduler, staff roster maker, rota maker, employee schedule, work schedule template, shift planner, print schedule to PDF, free rota template, staff scheduling app, coverage checker, rest between shifts, overtime warning, schedule backup"
     />
     <meta name="author" content="Bhavin Virani" />
     <meta name="robots" content="index, follow" />
@@ -41,7 +41,7 @@
     />
     <meta
       property="og:description"
-      content="Build a two-week staff roster in your browser and print it to PDF. No account, no server, works offline."
+      content="Build a two-week staff roster in your browser, catch coverage gaps and rest or overtime problems with your own rules, back it up to a file, and print to PDF. No account, no server, works offline."
     />
     <meta
       property="og:url"
@@ -55,7 +55,7 @@
     <meta property="og:image:height" content="630" />
     <meta
       property="og:image:alt"
-      content="The Shift Schedule Builder grid, color-coded by shift time, with an hours summary."
+      content="Shift Schedule Builder: build a staff roster and print it to PDF, showing the color-coded two-week shift grid."
     />
 
     <!-- Twitter / X card -->
@@ -66,7 +66,7 @@
     />
     <meta
       name="twitter:description"
-      content="Build a two-week staff roster in your browser and print it to PDF. No account, no server, works offline."
+      content="Build a two-week staff roster in your browser, catch coverage gaps and rest or overtime problems with your own rules, back it up to a file, and print to PDF. No account, no server, works offline."
     />
     <meta
       name="twitter:image"
@@ -80,7 +80,7 @@
         "@type": "WebApplication",
         "name": "Shift Schedule Builder",
         "url": "https://bhavinvirani.github.io/Scheduler/",
-        "description": "A free, offline web app for building two-week staff shift schedules and printing them to PDF. No account or server required.",
+        "description": "A free, offline web app for building two-week staff shift schedules, checking them against your own coverage and rest rules, backing them up to a file, and printing to PDF. No account or server required.",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Any (web browser)",
         "browserRequirements": "Requires JavaScript",
@@ -89,12 +89,19 @@
         "author": { "@type": "Person", "name": "Bhavin Virani" },
         "license": "https://www.apache.org/licenses/LICENSE-2.0",
         "featureList": [
-          "Two-week shift grid",
+          "One or two week shift grid",
+          "Shifts as start time plus length, overnight-aware",
+          "Off, PTO and holiday day statuses",
           "Reusable shift presets and one-tap fill",
-          "Undo and redo",
+          "User-defined rule checks: coverage, rest between shifts, weekly hours, consecutive days",
+          "On-screen coverage and rule warnings",
           "Hours summary per person",
+          "Undo and redo",
           "Color or black-and-white printing",
-          "Print to PDF",
+          "Print to PDF, choose schedule only or with the hours page",
+          "Backup and restore to a file, auto-save on Chrome and Edge",
+          "Share a read-only roster link",
+          "Mobile card layout",
           "Works offline, no account"
         ],
         "screenshot": "https://bhavinvirani.github.io/Scheduler/og-image.png"

@@ -24,7 +24,8 @@ This document is the spec. Hand it to Claude Code and work phase by phase.
 - **Cell states beyond shifts:** `empty | shift | off | pto | holiday`. Modelled as a tagged union from day one. Retrofitting this later means touching every cell read site.
 - **Day headers show dates** (`Mon` over `Jul 27`). Prevents the "which Monday?" error that a bare weekday name invites.
 - **Team size up to ~25 rows.** Table gets a sticky header row and sticky name column.
-- **Rule warnings are Phase 3**, but the data model supports them from Phase 1 (see §3).
+- **Rule warnings** were planned for Phase 3 and shipped in v1.2.0 as user-defined,
+  configurable checks; the data model supported them from Phase 1 (see §3).
 
 ---
 
@@ -250,11 +251,18 @@ This is the whole reason to build the app rather than keep using Excel. A spread
 - Autosave the whole `Schedule` to `localStorage` on change, debounced ~300ms.
 - Key: `shift-scheduler:v1:current`
 - **Guard the load.** Validate the parsed shape and `version`; on any failure, fall back to a fresh schedule and don't throw. A half-written or hand-edited blob should never white-screen the app. Treat localStorage as untrusted input — because it is.
-- Sharing is a **view-only link**, not a file: the schedule is encoded into the URL hash (`#r=…`) by a compact, dependency-free codec (`src/lib/shareCodec.ts`) and opened read-only (`SharedRosterView`). The originally-planned JSON export/import was dropped. To reuse a fortnight, keep the printed PDF or the link, or use **Copy week 1 → 2**.
+- Presets and rules have their own `localStorage` keys (`…:presets`, `…:rules`), edited through pure reducers, independent of the schedule and its undo history.
+- **Sharing** is a **view-only link**: the schedule is encoded into the URL hash (`#r=…`) by a compact, dependency-free codec (`src/lib/shareCodec.ts`) and opened read-only (`SharedRosterView`).
+- **Backup** (added v1.3.0) is the durable copy: everything (schedule + presets + rules) serializes to one versioned JSON file the user controls — Download/Restore on any browser, or a File System Access file that auto-saves on Chromium (`src/lib/backupCodec.ts`, `src/state/BackupContext.tsx`). `localStorage` stays primary; the file is a mirror and recovery source. Nothing is uploaded.
 
 ---
 
 ## 8. Phases
+
+> **Status:** Phases 1–3 have all shipped, plus later additions — a print-scope
+> choice (v1.1.0), user-defined rule checks (v1.2.0), and backup/restore to a
+> file (v1.3.0). The roadmap below is kept for context. "JSON export / import"
+> shipped as **Backup**; "Rule warnings" shipped as user-configurable rules.
 
 Ship each phase as a working, committed state. Do not start the next until print preview passes.
 

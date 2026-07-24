@@ -1,7 +1,7 @@
 {
   "name": "Shift Schedule Builder",
   "short_name": "Schedules",
-  "description": "Build a two-week staff roster and print it to PDF. No account, works offline.",
+  "description": "Build a two-week staff roster, check it against your own coverage and rest rules, back it up to a file, and print to PDF. No account, works offline.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
