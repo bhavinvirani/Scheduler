@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Try the live app first
+    url: https://bhavinvirani.github.io/Scheduler/
+    about: Reproduce or explore the behaviour before filing an issue.
