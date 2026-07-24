@@ -5,6 +5,7 @@ import { useView } from '../state/ViewContext.tsx';
 import { useUndoRedoShortcuts } from '../hooks/useUndoRedoShortcuts.ts';
 import { ConfirmDialog } from './ConfirmDialog.tsx';
 import { PresetManager } from './PresetManager.tsx';
+import { ShareModal } from './ShareModal.tsx';
 
 const buttonBase =
   'inline-flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-sm font-medium ' +
@@ -34,6 +35,7 @@ export function Toolbar() {
   const canCopyWeek = weekCount === 2 && people.length > 0;
   const [confirmClearOpen, setConfirmClearOpen] = useState(false);
   const [presetsOpen, setPresetsOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
 
   useUndoRedoShortcuts(undo, redo);
 
@@ -139,7 +141,7 @@ export function Toolbar() {
                     onClick={() => setDisplayMode(mode)}
                     title={
                       mode === 'mono'
-                        ? 'Black & white — best for printing'
+                        ? 'Black & white, best for printing'
                         : 'Color shifts by time of day'
                     }
                     className={`${segmentButton} ${segmentState(displayMode === mode)}`}
@@ -215,8 +217,21 @@ export function Toolbar() {
 
             <button
               type="button"
+              onClick={() => setShareOpen(true)}
+              disabled={people.length === 0}
+              title={
+                people.length === 0
+                  ? 'Add someone first'
+                  : 'Get a view-only link to share'
+              }
+              className={`${secondaryButton} ml-auto`}
+            >
+              Share link
+            </button>
+            <button
+              type="button"
               onClick={() => window.print()}
-              className={`${primaryButton} ml-auto`}
+              className={primaryButton}
             >
               Print / PDF
             </button>
@@ -238,6 +253,8 @@ export function Toolbar() {
       />
 
       <PresetManager open={presetsOpen} onClose={() => setPresetsOpen(false)} />
+
+      <ShareModal open={shareOpen} onClose={() => setShareOpen(false)} />
     </>
   );
 }

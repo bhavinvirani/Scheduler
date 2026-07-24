@@ -1,11 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
+import type { Schedule } from './types.ts';
 import { addDays, formatDateRange } from './lib/dates.ts';
 import { DAYS_PER_WEEK, DEFAULT_SCHEDULE_TITLE } from './constants.ts';
-import { ScheduleProvider, useSchedule } from './state/ScheduleContext.tsx';
+import {
+  ScheduleProvider,
+  ReadOnlyScheduleProvider,
+  useSchedule,
+} from './state/ScheduleContext.tsx';
 import { DisplayModeProvider } from './state/DisplayModeContext.tsx';
 import { ViewProvider, useView } from './state/ViewContext.tsx';
 import { PresetsProvider } from './state/PresetsContext.tsx';
 import { PaintProvider } from './state/PaintContext.tsx';
+import { decodeShare } from './lib/shareCodec.ts';
 import { usePrintFilename } from './hooks/usePrintFilename.ts';
 import { Toolbar } from './components/Toolbar.tsx';
 import { WeekTable } from './components/WeekTable.tsx';
@@ -13,6 +19,7 @@ import { MobileSchedule } from './components/MobileSchedule.tsx';
 import { PaintBar } from './components/PaintBar.tsx';
 import { UndoFlash } from './components/UndoFlash.tsx';
 import { SummaryView } from './components/SummaryView.tsx';
+import { SharedRosterView } from './components/SharedRosterView.tsx';
 
 function EmptyState() {
   const { dispatch } = useSchedule();
@@ -102,7 +109,34 @@ function ScheduleDocument() {
   );
 }
 
+/** A shared roster to display read-only, decoded from a `#r=` link — or null. */
+function readSharedSchedule(): Schedule | null {
+  const hash = window.location.hash;
+  if (!hash.startsWith('#r=')) return null;
+  return decodeShare(hash.slice(3));
+}
+
 export default function App() {
+  // Decoded once on mount: a valid `#r=` link opens the read-only shared view,
+  // which never touches localStorage. Anything else is the normal editor.
+  const shared = useMemo(readSharedSchedule, []);
+
+  if (shared) {
+    return (
+      <DisplayModeProvider>
+        <ViewProvider>
+          <PresetsProvider>
+            <PaintProvider>
+              <ReadOnlyScheduleProvider schedule={shared}>
+                <SharedRosterView />
+              </ReadOnlyScheduleProvider>
+            </PaintProvider>
+          </PresetsProvider>
+        </ViewProvider>
+      </DisplayModeProvider>
+    );
+  }
+
   return (
     <DisplayModeProvider>
       <ViewProvider>

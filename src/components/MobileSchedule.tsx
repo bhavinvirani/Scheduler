@@ -8,6 +8,7 @@ import { useDisplayMode } from '../state/DisplayModeContext.tsx';
 import { usePresets } from '../state/PresetsContext.tsx';
 import { DAYS_PER_WEEK } from '../constants.ts';
 import { addDays, formatDateRange, formatDayHeader } from '../lib/dates.ts';
+import { assignmentLabel } from '../lib/time.ts';
 import { formatHours, summarizePerson } from '../lib/hours.ts';
 import { duplicateNameKeys, normalizeName } from '../lib/people.ts';
 import { fillClass } from './shiftFill.ts';
@@ -20,6 +21,7 @@ interface PersonCardProps {
   displayMode: DisplayMode;
   presets: ShiftPreset[];
   isDuplicate: boolean;
+  readOnly: boolean;
 }
 
 function PersonCard({
@@ -29,6 +31,7 @@ function PersonCard({
   displayMode,
   presets,
   isDuplicate,
+  readOnly,
 }: PersonCardProps) {
   const { startDate, weekCount } = schedule;
   const summary = summarizePerson(schedule, person.id);
@@ -36,26 +39,32 @@ function PersonCard({
   return (
     <article className="overflow-hidden rounded-sm border border-rule bg-paper">
       <header className="flex items-center gap-2 border-b border-rule px-3 py-2">
-        <input
-          type="text"
-          value={person.name}
-          placeholder="Name"
-          aria-label="Person name"
-          aria-invalid={isDuplicate}
-          onChange={(event) =>
-            dispatch({
-              type: 'RENAME_PERSON',
-              id: person.id,
-              name: event.target.value,
-            })
-          }
-          className={`min-w-0 flex-1 bg-transparent text-base font-semibold outline-none placeholder:text-ink/40 focus-visible:ring-2 focus-visible:ring-inset ${
-            isDuplicate
-              ? 'ring-1 ring-alert focus-visible:ring-alert'
-              : 'focus-visible:ring-ink/50'
-          }`}
-        />
-        {isDuplicate && (
+        {readOnly ? (
+          <span className="min-w-0 flex-1 truncate text-base font-semibold">
+            {person.name || '—'}
+          </span>
+        ) : (
+          <input
+            type="text"
+            value={person.name}
+            placeholder="Name"
+            aria-label="Person name"
+            aria-invalid={isDuplicate}
+            onChange={(event) =>
+              dispatch({
+                type: 'RENAME_PERSON',
+                id: person.id,
+                name: event.target.value,
+              })
+            }
+            className={`min-w-0 flex-1 bg-transparent text-base font-semibold outline-none placeholder:text-ink/40 focus-visible:ring-2 focus-visible:ring-inset ${
+              isDuplicate
+                ? 'ring-1 ring-alert focus-visible:ring-alert'
+                : 'focus-visible:ring-ink/50'
+            }`}
+          />
+        )}
+        {!readOnly && isDuplicate && (
           <span
             title="Another person already has this name"
             aria-label="Duplicate name"
@@ -67,14 +76,16 @@ function PersonCard({
         <span className="shrink-0 font-mono text-xs text-ink/60">
           {formatHours(summary.totalMinutes)}
         </span>
-        <button
-          type="button"
-          aria-label={`Remove ${person.name || 'person'}`}
-          onClick={() => dispatch({ type: 'REMOVE_PERSON', id: person.id })}
-          className="shrink-0 rounded px-2 py-1 text-lg leading-none text-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:ring-2 focus-visible:ring-ink/50"
-        >
-          ×
-        </button>
+        {!readOnly && (
+          <button
+            type="button"
+            aria-label={`Remove ${person.name || 'person'}`}
+            onClick={() => dispatch({ type: 'REMOVE_PERSON', id: person.id })}
+            className="shrink-0 rounded px-2 py-1 text-lg leading-none text-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:ring-2 focus-visible:ring-ink/50"
+          >
+            ×
+          </button>
+        )}
       </header>
 
       {Array.from({ length: weekCount }, (_, week) => {
@@ -107,15 +118,21 @@ function PersonCard({
                     </span>
                   </div>
                   <div className="flex-1 border-l border-black/10">
-                    <ShiftControls
-                      personId={person.id}
-                      dayIndex={dayIndex}
-                      assignment={assignment}
-                      dispatch={dispatch}
-                      presets={presets}
-                      cellLabel={`${person.name || 'Unnamed'} — ${header.weekday} ${header.date}`}
-                      size="comfortable"
-                    />
+                    {readOnly ? (
+                      <div className="px-3 py-2 font-mono text-sm font-medium">
+                        {assignmentLabel(assignment) || '—'}
+                      </div>
+                    ) : (
+                      <ShiftControls
+                        personId={person.id}
+                        dayIndex={dayIndex}
+                        assignment={assignment}
+                        dispatch={dispatch}
+                        presets={presets}
+                        cellLabel={`${person.name || 'Unnamed'} — ${header.weekday} ${header.date}`}
+                        size="comfortable"
+                      />
+                    )}
                   </div>
                 </div>
               );
@@ -129,7 +146,7 @@ function PersonCard({
 
 /** The phone layout: one card per person, days stacked as full-width rows. */
 export function MobileSchedule() {
-  const { schedule, dispatch } = useSchedule();
+  const { schedule, dispatch, readOnly } = useSchedule();
   const { displayMode } = useDisplayMode();
   const { presets } = usePresets();
   const dupes = duplicateNameKeys(schedule.people.map((p) => p.name));
@@ -145,6 +162,7 @@ export function MobileSchedule() {
           displayMode={displayMode}
           presets={presets}
           isDuplicate={dupes.has(normalizeName(person.name))}
+          readOnly={readOnly}
         />
       ))}
     </div>

@@ -250,7 +250,7 @@ This is the whole reason to build the app rather than keep using Excel. A spread
 - Autosave the whole `Schedule` to `localStorage` on change, debounced ~300ms.
 - Key: `shift-scheduler:v1:current`
 - **Guard the load.** Validate the parsed shape and `version`; on any failure, fall back to a fresh schedule and don't throw. A half-written or hand-edited blob should never white-screen the app. Treat localStorage as untrusted input — because it is.
-- Phase 2 adds explicit **Export JSON** / **Import JSON** so a fortnight can be archived, shared with a colleague, or used as next fortnight's starting point.
+- Sharing is a **view-only link**, not a file: the schedule is encoded into the URL hash (`#r=…`) by a compact, dependency-free codec (`src/lib/shareCodec.ts`) and opened read-only (`SharedRosterView`). The originally-planned JSON export/import was dropped. To reuse a fortnight, keep the printed PDF or the link, or use **Copy week 1 → 2**.
 
 ---
 

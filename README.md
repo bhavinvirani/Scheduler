@@ -35,24 +35,26 @@ lives in your browser.
 
 - 🧑‍🤝‍🧑 **Built for small teams**: a café, a clinic, a front desk, a ward, a shop floor.
 - 🖨️ **Print-first**: what's on screen is what prints; the PDF isn't a separate export.
-- 🔒 **Yours only**: no login, no cloud, no cookies. Your schedule never leaves your browser.
+- 🔒 **Yours only**: no login, no cloud, no cookies; nothing you type is uploaded to a server.
+- 🔗 **Easy to share**: send a view-only link your team can open and print, no account needed.
 - ⚡ **Quick to fill**: reusable presets, click-to-paint, and proper undo/redo.
 
 ## What it does
 
-|                                  |                                                                                                                                                                       |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **One or two weeks**             | Pick a Monday and build a single week or a full fortnight.                                                                                                            |
-| **Shifts as start + length**     | You choose when a shift starts and how long it runs, so an overnight (11 PM → 7 AM) is easy to enter and the hours always add up.                                     |
-| **Off, PTO, holiday**            | Mark a day as time off instead of a shift.                                                                                                                            |
-| **Presets**                      | Save the shifts you use all the time Day, Evening, Night, whatever you like and drop them in with a click. They're fully editable and stick around between schedules. |
-| **Paint them in** _(on desktop)_ | Pick a preset, then click across the grid to fill cells with it.                                                                                                      |
-| **Undo and redo**                | The usual ⌘Z / Ctrl+Z. Whatever you change flashes and scrolls into view, so you don't lose your spot.                                                                |
-| **An hours page**                | A second page adds up hours per person per week, the fortnight total, and off/PTO/holiday counts, with a blank Notes column for sign-off by hand.                     |
-| **Color or black & white**       | Color-code shifts by time of day, or switch to B&W for a clean print on any office printer.                                                                           |
-| **Print to PDF**                 | The grid is page one, the hours summary is page two print double-sided for a single sheet. The file is named with your title and the date.                            |
-| **Works on a phone**             | A card layout for editing on the go.                                                                                                                                  |
-| **Saves itself, works offline**  | Everything is kept in your browser and there's nothing to sign into.                                                                                                  |
+|                                  |                                                                                                                                                                         |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **One or two weeks**             | Pick a Monday and build a single week or a full fortnight.                                                                                                              |
+| **Shifts as start + length**     | You choose when a shift starts and how long it runs, so an overnight (11 PM → 7 AM) is easy to enter and the hours always add up.                                       |
+| **Off, PTO, holiday**            | Mark a day as time off instead of a shift.                                                                                                                              |
+| **Presets**                      | Save the shifts you use all the time (Day, Evening, Night, whatever you like) and drop them in with a click. They're fully editable and stick around between schedules. |
+| **Paint them in** _(on desktop)_ | Pick a preset, then click across the grid to fill cells with it.                                                                                                        |
+| **Undo and redo**                | The usual ⌘Z / Ctrl+Z. Whatever you change flashes and scrolls into view, so you don't lose your spot.                                                                  |
+| **An hours page**                | A second page adds up hours per person per week, the fortnight total, and off/PTO/holiday counts, with a blank Notes column for sign-off by hand.                       |
+| **Color or black & white**       | Color-code shifts by time of day, or switch to B&W for a clean print on any office printer.                                                                             |
+| **Print to PDF**                 | The grid is page one and the hours summary is page two, so you can print double-sided for a single sheet. The file is named with your title and the date.               |
+| **Works on a phone**             | A card layout for editing on the go.                                                                                                                                    |
+| **Saves itself, works offline**  | Everything is kept in your browser and there's nothing to sign into.                                                                                                    |
+| **Share a view-only link**       | Send a link and your team opens a read-only roster they can view and print. No account or app, and it never touches their own saved schedule.                           |
 
 <table>
 <tr>
@@ -64,16 +66,17 @@ lives in your browser.
 ## Filling in a roster
 
 1. **Open the [app](https://bhavinvirani.github.io/Scheduler/).** There's nothing to install.
-2. **Set the week** pick the starting Monday and choose one or two weeks.
+2. **Set the week** by picking the starting Monday and choosing one or two weeks.
 3. **Add people** with **+ Add person** and type their names down the left.
 4. **Fill in the days.** For each cell you can:
    - open the menu and pick a start time and a length, or choose Off / PTO / Holiday;
    - pick one of your **presets** from the top of that menu; or
    - on desktop, click a preset in the **Quick fill** bar to pick it up, then click cells to paint it in (press **Esc** when you're done).
-5. **Adjust your presets** any time with **Presets…** rename them, change their times, add new ones, or reset to the defaults.
+5. **Adjust your presets** any time with **Presets…** to rename them, change their times, add new ones, or reset to the defaults.
 6. **Add a title** if you want one (click above the grid). It shows on the printout and in the PDF's file name.
 7. **Check the hours** under **View → Summary**.
 8. **Print** with **Print / PDF**, then choose _Save as PDF_ (A4 landscape). Page one is the grid, page two is the summary.
+9. **Share it** by clicking **Share link** and pasting the copied link in your team chat. Anyone who opens it gets a read-only roster to view and print (grid only, no summary), and it never disturbs their own saved schedule.
 
 Already built week one? **Copy week 1 → 2** mirrors it so you only tweak the differences.
 

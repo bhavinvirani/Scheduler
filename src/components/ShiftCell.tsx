@@ -21,6 +21,8 @@ interface ShiftCellProps {
   armedPreset: ShiftPreset | null;
   /** Human context for screen readers, e.g. "Ada — Monday Jul 20". */
   cellLabel: string;
+  /** In a shared view-only roster the cell is a static label, not editable. */
+  readOnly?: boolean;
 }
 
 function ShiftCellComponent({
@@ -32,12 +34,22 @@ function ShiftCellComponent({
   presets,
   armedPreset,
   cellLabel,
+  readOnly = false,
 }: ShiftCellProps) {
+  const tdClass = `border border-rule p-0 align-top ${fillClass(assignment, displayMode)}`;
+
+  if (readOnly) {
+    return (
+      <td data-cellkey={cellKey(personId, dayIndex)} className={tdClass}>
+        <div className="px-1.5 py-1 font-mono text-xs font-medium leading-tight tabular-nums print:text-[8pt]">
+          {assignmentLabel(assignment) || ' '}
+        </div>
+      </td>
+    );
+  }
+
   return (
-    <td
-      data-cellkey={cellKey(personId, dayIndex)}
-      className={`border border-rule p-0 align-top ${fillClass(assignment, displayMode)}`}
-    >
+    <td data-cellkey={cellKey(personId, dayIndex)} className={tdClass}>
       {/* Print: the selects don't render reliably, so show a static label. */}
       <span className="hidden px-1.5 py-1 font-mono text-[8pt] font-medium leading-tight tabular-nums print:block">
         {assignmentLabel(assignment)}
@@ -64,7 +76,7 @@ function ShiftCellComponent({
             aria-label={`Fill ${presetLabel(armedPreset)} into ${cellLabel}`}
             className="block min-h-[2.25rem] w-full cursor-crosshair px-1.5 py-1 text-left font-mono text-xs font-medium leading-tight tabular-nums hover:bg-ink/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ink/50"
           >
-            {assignmentLabel(assignment) || ' '}
+            {assignmentLabel(assignment) || ' '}
           </button>
         ) : (
           <ShiftControls
@@ -85,6 +97,6 @@ function ShiftCellComponent({
  * Memoized so a change to one cell doesn't re-render the other ~349. Relies on
  * `getAssignment` returning stable references (a shared frozen empty, and the
  * reducer preserving untouched assignment objects). `displayMode`, `presets`,
- * and `armedPreset` change rarely and re-render every cell by design.
+ * `armedPreset`, and `readOnly` change rarely and re-render every cell by design.
  */
 export const ShiftCell = memo(ShiftCellComponent);

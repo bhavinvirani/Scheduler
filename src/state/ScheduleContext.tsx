@@ -14,6 +14,8 @@ interface ScheduleContextValue {
   redo: () => void;
   flashedKeys: ReadonlySet<string>;
   flashNonce: number;
+  /** True in the shared "view-only" mode: components render static, non-editable. */
+  readOnly: boolean;
 }
 
 const ScheduleContext = createContext<ScheduleContextValue | null>(null);
@@ -40,8 +42,44 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
       redo,
       flashedKeys,
       flashNonce,
+      readOnly: false,
     }),
     [schedule, dispatch, canUndo, canRedo, undo, redo, flashedKeys, flashNonce],
+  );
+  return (
+    <ScheduleContext.Provider value={value}>
+      {children}
+    </ScheduleContext.Provider>
+  );
+}
+
+const NO_FLASH: ReadonlySet<string> = new Set();
+
+/**
+ * Provides a fixed schedule with every mutation neutered — the read-only backing
+ * for a shared "view-only" link. Nothing here touches localStorage, so opening a
+ * shared roster never disturbs the viewer's own saved schedule.
+ */
+export function ReadOnlyScheduleProvider({
+  schedule,
+  children,
+}: {
+  schedule: Schedule;
+  children: ReactNode;
+}) {
+  const value = useMemo<ScheduleContextValue>(
+    () => ({
+      schedule,
+      dispatch: () => {},
+      canUndo: false,
+      canRedo: false,
+      undo: () => {},
+      redo: () => {},
+      flashedKeys: NO_FLASH,
+      flashNonce: 0,
+      readOnly: true,
+    }),
+    [schedule],
   );
   return (
     <ScheduleContext.Provider value={value}>

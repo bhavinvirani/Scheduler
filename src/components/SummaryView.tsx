@@ -35,7 +35,7 @@ export function SummaryView() {
     <section>
       <header className="mb-4">
         <h2 className="text-lg font-semibold">
-          {effectiveTitle} — Hours Summary
+          {effectiveTitle} · Hours Summary
         </h2>
         <p className="font-mono text-sm text-ink/60">
           {formatDateRange(startDate, addDays(startDate, lastDayIndex))}

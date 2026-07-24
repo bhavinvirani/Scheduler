@@ -21,6 +21,8 @@ interface PersonRowProps {
   armedPreset: ShiftPreset | null;
   /** True when another person shares this (non-empty) name. */
   isDuplicate: boolean;
+  /** Shared view-only roster: render the name static, no input or remove. */
+  readOnly?: boolean;
 }
 
 export function PersonRow({
@@ -33,6 +35,7 @@ export function PersonRow({
   presets,
   armedPreset,
   isDuplicate,
+  readOnly = false,
 }: PersonRowProps) {
   const firstDay = weekIndex * DAYS_PER_WEEK;
 
@@ -42,50 +45,60 @@ export function PersonRow({
         scope="row"
         className="sticky left-0 z-10 border border-rule border-r-ink/70 bg-paper p-0 text-left"
       >
-        {/* Print: a plain name; inputs and the remove button are chrome. */}
-        <span className="hidden px-2 py-1 text-[9pt] font-medium print:block">
-          {person.name || '—'}
-        </span>
-
-        <div className="flex items-center gap-1 px-1 py-0.5 print:hidden">
-          <input
-            type="text"
-            value={person.name}
-            placeholder="Name"
-            aria-label="Person name"
-            aria-invalid={isDuplicate}
-            onChange={(event) =>
-              dispatch({
-                type: 'RENAME_PERSON',
-                id: person.id,
-                name: event.target.value,
-              })
-            }
-            className={`w-32 min-w-0 flex-1 bg-transparent px-1 py-0.5 text-sm font-medium outline-none placeholder:text-ink/40 focus-visible:ring-2 focus-visible:ring-inset ${
-              isDuplicate
-                ? 'ring-1 ring-alert focus-visible:ring-alert'
-                : 'focus-visible:ring-ink/50'
-            }`}
-          />
-          {isDuplicate && (
-            <span
-              title="Another person already has this name"
-              aria-label="Duplicate name"
-              className="shrink-0 select-none px-0.5 text-sm font-bold text-alert"
-            >
-              !
+        {readOnly ? (
+          <span className="block px-2 py-1 text-sm font-medium print:text-[9pt]">
+            {person.name || '—'}
+          </span>
+        ) : (
+          <>
+            {/* Print: a plain name; inputs and the remove button are chrome. */}
+            <span className="hidden px-2 py-1 text-[9pt] font-medium print:block">
+              {person.name || '—'}
             </span>
-          )}
-          <button
-            type="button"
-            aria-label={`Remove ${person.name || 'person'}`}
-            title="Remove"
-            onClick={() => dispatch({ type: 'REMOVE_PERSON', id: person.id })}
-            className="shrink-0 rounded px-1.5 text-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:ring-2 focus-visible:ring-ink/50"
-          >
-            ×
-          </button>
-        </div>
+
+            <div className="flex items-center gap-1 px-1 py-0.5 print:hidden">
+              <input
+                type="text"
+                value={person.name}
+                placeholder="Name"
+                aria-label="Person name"
+                aria-invalid={isDuplicate}
+                onChange={(event) =>
+                  dispatch({
+                    type: 'RENAME_PERSON',
+                    id: person.id,
+                    name: event.target.value,
+                  })
+                }
+                className={`w-32 min-w-0 flex-1 bg-transparent px-1 py-0.5 text-sm font-medium outline-none placeholder:text-ink/40 focus-visible:ring-2 focus-visible:ring-inset ${
+                  isDuplicate
+                    ? 'ring-1 ring-alert focus-visible:ring-alert'
+                    : 'focus-visible:ring-ink/50'
+                }`}
+              />
+              {isDuplicate && (
+                <span
+                  title="Another person already has this name"
+                  aria-label="Duplicate name"
+                  className="shrink-0 select-none px-0.5 text-sm font-bold text-alert"
+                >
+                  !
+                </span>
+              )}
+              <button
+                type="button"
+                aria-label={`Remove ${person.name || 'person'}`}
+                title="Remove"
+                onClick={() =>
+                  dispatch({ type: 'REMOVE_PERSON', id: person.id })
+                }
+                className="shrink-0 rounded px-1.5 text-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:ring-2 focus-visible:ring-ink/50"
+              >
+                ×
+              </button>
+            </div>
+          </>
+        )}
       </th>
 
       {Array.from({ length: DAYS_PER_WEEK }, (_, offset) => {
@@ -102,6 +115,7 @@ export function PersonRow({
             presets={presets}
             armedPreset={armedPreset}
             cellLabel={`${person.name || 'Unnamed'} — ${header.weekday} ${header.date}`}
+            readOnly={readOnly}
           />
         );
       })}

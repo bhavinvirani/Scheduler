@@ -13,7 +13,7 @@ interface WeekTableProps {
 }
 
 export function WeekTable({ weekIndex }: WeekTableProps) {
-  const { schedule, dispatch } = useSchedule();
+  const { schedule, dispatch, readOnly } = useSchedule();
   const { displayMode } = useDisplayMode();
   const { presets } = usePresets();
   const { armedPresetId } = usePaint();
@@ -79,6 +79,7 @@ export function WeekTable({ weekIndex }: WeekTableProps) {
                 presets={presets}
                 armedPreset={armedPreset}
                 isDuplicate={isDuplicate(person.name)}
+                readOnly={readOnly}
               />
             ))}
           </tbody>

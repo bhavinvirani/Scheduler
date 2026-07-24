@@ -42,3 +42,10 @@ regression environment for the date parser. Do not remove the `TZ` prefix.
 See [PLAN.md §4](./PLAN.md). In short: `useReducer` + context, pure reducer in
 `src/state/scheduleReducer.ts`, pure helpers in `src/lib/`, one component tree
 with two CSS regimes (screen + print).
+
+Shared rosters are **view-only links**: `src/lib/shareCodec.ts` encodes the
+schedule into the URL hash (`#r=…`) with a compact, dependency-free codec, and
+`App` opens it read-only via `ReadOnlyScheduleProvider` + `SharedRosterView`
+(grid only, no summary). Because it's hash-based it needs no server-side routing
+(works on plain GitHub Pages) and never writes to `localStorage`; a decoded link
+is untrusted and re-validated with `isValidSchedule`.
