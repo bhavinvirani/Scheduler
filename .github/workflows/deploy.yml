@@ -46,7 +46,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
   # Cut the release only after the site has actually deployed. A failed build
   # or deploy skips this job, so the tag never moves ahead of what is live.
