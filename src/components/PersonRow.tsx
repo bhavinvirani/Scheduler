@@ -1,5 +1,5 @@
 import type { Dispatch } from 'react';
-import type { Person, Schedule } from '../types.ts';
+import type { Person, Schedule, ShiftPreset } from '../types.ts';
 import type { Action } from '../state/scheduleReducer.ts';
 import type { DisplayMode } from '../state/DisplayModeContext.tsx';
 import { getAssignment } from '../state/scheduleReducer.ts';
@@ -15,6 +15,10 @@ interface PersonRowProps {
   schedule: Schedule;
   dispatch: Dispatch<Action>;
   displayMode: DisplayMode;
+  /** The preset library, for the cell menu's one-tap fills. */
+  presets: ShiftPreset[];
+  /** The armed paint preset (or null) — click-to-fill on each day cell. */
+  armedPreset: ShiftPreset | null;
   /** True when another person shares this (non-empty) name. */
   isDuplicate: boolean;
 }
@@ -26,6 +30,8 @@ export function PersonRow({
   schedule,
   dispatch,
   displayMode,
+  presets,
+  armedPreset,
   isDuplicate,
 }: PersonRowProps) {
   const firstDay = weekIndex * DAYS_PER_WEEK;
@@ -75,7 +81,7 @@ export function PersonRow({
             aria-label={`Remove ${person.name || 'person'}`}
             title="Remove"
             onClick={() => dispatch({ type: 'REMOVE_PERSON', id: person.id })}
-            className="shrink-0 rounded px-1.5 text-ink/40 hover:bg-ink/5 hover:text-alert focus-visible:ring-2 focus-visible:ring-ink/50"
+            className="shrink-0 rounded px-1.5 text-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:ring-2 focus-visible:ring-ink/50"
           >
             ×
           </button>
@@ -93,6 +99,8 @@ export function PersonRow({
             assignment={getAssignment(schedule, person.id, dayIndex)}
             dispatch={dispatch}
             displayMode={displayMode}
+            presets={presets}
+            armedPreset={armedPreset}
             cellLabel={`${person.name || 'Unnamed'} — ${header.weekday} ${header.date}`}
           />
         );

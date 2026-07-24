@@ -37,6 +37,34 @@ export function cellKey(personId: string, dayIndex: number): CellKey {
  */
 export const EMPTY_ASSIGNMENT: Assignment = Object.freeze({ kind: 'empty' });
 
+/** Value-equality for assignments — cheap because the shapes are tiny and flat. */
+function assignmentsEqual(a: Assignment, b: Assignment): boolean {
+  if (a.kind !== b.kind) return false;
+  if (a.kind === 'shift' && b.kind === 'shift') {
+    return a.start === b.start && a.duration === b.duration;
+  }
+  return true; // empty/off/pto/holiday carry no other fields
+}
+
+/**
+ * The assignment cells that differ between two schedules — used to highlight
+ * exactly what an undo/redo changed. Keyed by `${personId}:${dayIndex}`.
+ */
+export function changedAssignmentKeys(a: Schedule, b: Schedule): string[] {
+  const keys = new Set([
+    ...Object.keys(a.assignments),
+    ...Object.keys(b.assignments),
+  ]);
+  const changed: string[] = [];
+  for (const key of keys) {
+    const av = a.assignments[key];
+    const bv = b.assignments[key];
+    if (av === bv) continue;
+    if (!av || !bv || !assignmentsEqual(av, bv)) changed.push(key);
+  }
+  return changed;
+}
+
 /** Read a cell, defaulting an unset one to `empty` — the map only stores non-empty cells. */
 export function getAssignment(
   schedule: Schedule,
@@ -94,6 +122,10 @@ export function scheduleReducer(state: Schedule, action: Action): Schedule {
 
     case 'SET_ASSIGNMENT': {
       const key = cellKey(action.personId, action.dayIndex);
+      // Setting a cell to what it already holds changes nothing. Return the same
+      // reference so React skips a render and undo/redo records no dead step.
+      const current = state.assignments[key] ?? EMPTY_ASSIGNMENT;
+      if (assignmentsEqual(current, action.value)) return state;
       const assignments = { ...state.assignments };
       // Keep the map minimal: an empty cell is the absence of a key, so reads
       // fall back to `{ kind: 'empty' }` and the persisted blob stays small.

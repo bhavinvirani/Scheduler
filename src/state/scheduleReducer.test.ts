@@ -5,6 +5,7 @@ import {
   createEmptySchedule,
   cellKey,
   getAssignment,
+  changedAssignmentKeys,
 } from './scheduleReducer.ts';
 
 const MONDAY = '2026-07-27';
@@ -128,6 +129,57 @@ describe('SET_ASSIGNMENT', () => {
     });
     expect(next.assignments).not.toBe(originalAssignments);
     expect(originalAssignments).toEqual({});
+  });
+
+  it('returns the same state when the value equals the current shift (no dead undo step)', () => {
+    const { state, id } = addPerson(createEmptySchedule(MONDAY));
+    const filled = scheduleReducer(state, {
+      type: 'SET_ASSIGNMENT',
+      personId: id,
+      dayIndex: 2,
+      value: SHIFT,
+    });
+    // Re-setting the identical shift (e.g. re-painting the same cell) is a no-op.
+    const again = scheduleReducer(filled, {
+      type: 'SET_ASSIGNMENT',
+      personId: id,
+      dayIndex: 2,
+      value: { kind: 'shift', start: 1380, duration: 480 },
+    });
+    expect(again).toBe(filled);
+  });
+
+  it('returns the same state when re-clearing an already-empty cell', () => {
+    const { state, id } = addPerson(createEmptySchedule(MONDAY));
+    const again = scheduleReducer(state, {
+      type: 'SET_ASSIGNMENT',
+      personId: id,
+      dayIndex: 4,
+      value: { kind: 'empty' },
+    });
+    expect(again).toBe(state);
+  });
+
+  it('still produces a new state when only the duration changes', () => {
+    const { state, id } = addPerson(createEmptySchedule(MONDAY));
+    const filled = scheduleReducer(state, {
+      type: 'SET_ASSIGNMENT',
+      personId: id,
+      dayIndex: 2,
+      value: SHIFT,
+    });
+    const changed = scheduleReducer(filled, {
+      type: 'SET_ASSIGNMENT',
+      personId: id,
+      dayIndex: 2,
+      value: { kind: 'shift', start: 1380, duration: 600 },
+    });
+    expect(changed).not.toBe(filled);
+    expect(getAssignment(changed, id, 2)).toEqual({
+      kind: 'shift',
+      start: 1380,
+      duration: 600,
+    });
   });
 });
 
@@ -399,5 +451,47 @@ describe('LOAD', () => {
       schedule: incoming,
     });
     expect(loaded).toEqual(incoming);
+  });
+});
+
+describe('changedAssignmentKeys', () => {
+  const base: Schedule = {
+    version: 1,
+    startDate: MONDAY,
+    weekCount: 2,
+    people: [{ id: 'p', name: 'P' }],
+    assignments: { 'p:0': SHIFT, 'p:1': { kind: 'off' } },
+  };
+
+  it('returns no keys for identical assignments', () => {
+    expect(changedAssignmentKeys(base, { ...base })).toEqual([]);
+  });
+
+  it('flags a cell that was added', () => {
+    const next = {
+      ...base,
+      assignments: { ...base.assignments, 'p:2': { kind: 'pto' as const } },
+    };
+    expect(changedAssignmentKeys(base, next)).toEqual(['p:2']);
+  });
+
+  it('flags a cell that was removed', () => {
+    const next = { ...base, assignments: { 'p:0': SHIFT } };
+    expect(changedAssignmentKeys(base, next)).toEqual(['p:1']);
+  });
+
+  it('flags a cell whose shift value changed', () => {
+    const next = {
+      ...base,
+      assignments: {
+        ...base.assignments,
+        'p:0': {
+          kind: 'shift' as const,
+          start: SHIFT.kind === 'shift' ? SHIFT.start : 0,
+          duration: 600,
+        },
+      },
+    };
+    expect(changedAssignmentKeys(base, next)).toEqual(['p:0']);
   });
 });

@@ -21,3 +21,41 @@
     font-variant-numeric: tabular-nums;
   }
 }
+
+/*
+ * Undo/redo feedback: the cell that changed pulses briefly so you can see WHERE
+ * the change landed. A double ink+paper ring stays visible on both the white
+ * (B&W) cells and the dark shift fills. Screen-only, transient — never prints.
+ */
+@keyframes cellFlash {
+  0%,
+  60% {
+    box-shadow:
+      inset 0 0 0 2px #151a21,
+      inset 0 0 0 4px rgba(251, 251, 249, 0.9);
+  }
+  100% {
+    box-shadow:
+      inset 0 0 0 2px transparent,
+      inset 0 0 0 4px transparent;
+  }
+}
+
+.cell-flash {
+  position: relative;
+  z-index: 1;
+  animation: cellFlash 1.1s ease-out;
+}
+
+@media print {
+  .cell-flash {
+    animation: none;
+    box-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell-flash {
+    animation-duration: 1.6s;
+  }
+}

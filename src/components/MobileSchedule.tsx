@@ -1,10 +1,11 @@
 import type { Dispatch } from 'react';
-import type { Person, Schedule } from '../types.ts';
+import type { Person, Schedule, ShiftPreset } from '../types.ts';
 import type { Action } from '../state/scheduleReducer.ts';
 import type { DisplayMode } from '../state/DisplayModeContext.tsx';
-import { getAssignment } from '../state/scheduleReducer.ts';
+import { cellKey, getAssignment } from '../state/scheduleReducer.ts';
 import { useSchedule } from '../state/ScheduleContext.tsx';
 import { useDisplayMode } from '../state/DisplayModeContext.tsx';
+import { usePresets } from '../state/PresetsContext.tsx';
 import { DAYS_PER_WEEK } from '../constants.ts';
 import { addDays, formatDateRange, formatDayHeader } from '../lib/dates.ts';
 import { formatHours, summarizePerson } from '../lib/hours.ts';
@@ -17,6 +18,7 @@ interface PersonCardProps {
   schedule: Schedule;
   dispatch: Dispatch<Action>;
   displayMode: DisplayMode;
+  presets: ShiftPreset[];
   isDuplicate: boolean;
 }
 
@@ -25,6 +27,7 @@ function PersonCard({
   schedule,
   dispatch,
   displayMode,
+  presets,
   isDuplicate,
 }: PersonCardProps) {
   const { startDate, weekCount } = schedule;
@@ -68,7 +71,7 @@ function PersonCard({
           type="button"
           aria-label={`Remove ${person.name || 'person'}`}
           onClick={() => dispatch({ type: 'REMOVE_PERSON', id: person.id })}
-          className="shrink-0 rounded px-2 py-1 text-lg leading-none text-ink/40 hover:bg-ink/5 hover:text-alert focus-visible:ring-2 focus-visible:ring-ink/50"
+          className="shrink-0 rounded px-2 py-1 text-lg leading-none text-ink/40 hover:bg-ink/5 hover:text-ink focus-visible:ring-2 focus-visible:ring-ink/50"
         >
           ×
         </button>
@@ -92,6 +95,7 @@ function PersonCard({
               return (
                 <div
                   key={dayIndex}
+                  data-cellkey={cellKey(person.id, dayIndex)}
                   className={`flex items-stretch border-b border-rule last:border-b-0 ${fillClass(assignment, displayMode)}`}
                 >
                   <div className="flex w-24 shrink-0 flex-col justify-center px-3 py-1">
@@ -108,6 +112,7 @@ function PersonCard({
                       dayIndex={dayIndex}
                       assignment={assignment}
                       dispatch={dispatch}
+                      presets={presets}
                       cellLabel={`${person.name || 'Unnamed'} — ${header.weekday} ${header.date}`}
                       size="comfortable"
                     />
@@ -126,6 +131,7 @@ function PersonCard({
 export function MobileSchedule() {
   const { schedule, dispatch } = useSchedule();
   const { displayMode } = useDisplayMode();
+  const { presets } = usePresets();
   const dupes = duplicateNameKeys(schedule.people.map((p) => p.name));
 
   return (
@@ -137,6 +143,7 @@ export function MobileSchedule() {
           schedule={schedule}
           dispatch={dispatch}
           displayMode={displayMode}
+          presets={presets}
           isDuplicate={dupes.has(normalizeName(person.name))}
         />
       ))}

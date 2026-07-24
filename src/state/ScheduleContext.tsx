@@ -2,19 +2,47 @@ import { createContext, useContext, useMemo } from 'react';
 import type { Dispatch, ReactNode } from 'react';
 import type { Schedule } from '../types.ts';
 import type { Action } from './scheduleReducer.ts';
+import type { WithHistoryAction } from './history.ts';
 import { usePersistedSchedule } from './usePersistedSchedule.ts';
 
 interface ScheduleContextValue {
   schedule: Schedule;
-  dispatch: Dispatch<Action>;
+  dispatch: Dispatch<WithHistoryAction<Action>>;
+  canUndo: boolean;
+  canRedo: boolean;
+  undo: () => void;
+  redo: () => void;
+  flashedKeys: ReadonlySet<string>;
+  flashNonce: number;
 }
 
 const ScheduleContext = createContext<ScheduleContextValue | null>(null);
 
-/** Owns the single source of truth and hands it to the tree below. */
+/** Owns the single source of truth (with undo/redo) and hands it to the tree below. */
 export function ScheduleProvider({ children }: { children: ReactNode }) {
-  const [schedule, dispatch] = usePersistedSchedule();
-  const value = useMemo(() => ({ schedule, dispatch }), [schedule, dispatch]);
+  const {
+    schedule,
+    dispatch,
+    canUndo,
+    canRedo,
+    undo,
+    redo,
+    flashedKeys,
+    flashNonce,
+  } = usePersistedSchedule();
+  const value = useMemo(
+    () => ({
+      schedule,
+      dispatch,
+      canUndo,
+      canRedo,
+      undo,
+      redo,
+      flashedKeys,
+      flashNonce,
+    }),
+    [schedule, dispatch, canUndo, canRedo, undo, redo, flashedKeys, flashNonce],
+  );
   return (
     <ScheduleContext.Provider value={value}>
       {children}

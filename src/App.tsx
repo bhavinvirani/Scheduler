@@ -4,9 +4,14 @@ import { DAYS_PER_WEEK, DEFAULT_SCHEDULE_TITLE } from './constants.ts';
 import { ScheduleProvider, useSchedule } from './state/ScheduleContext.tsx';
 import { DisplayModeProvider } from './state/DisplayModeContext.tsx';
 import { ViewProvider, useView } from './state/ViewContext.tsx';
+import { PresetsProvider } from './state/PresetsContext.tsx';
+import { PaintProvider } from './state/PaintContext.tsx';
+import { usePrintFilename } from './hooks/usePrintFilename.ts';
 import { Toolbar } from './components/Toolbar.tsx';
 import { WeekTable } from './components/WeekTable.tsx';
 import { MobileSchedule } from './components/MobileSchedule.tsx';
+import { PaintBar } from './components/PaintBar.tsx';
+import { UndoFlash } from './components/UndoFlash.tsx';
 import { SummaryView } from './components/SummaryView.tsx';
 
 function EmptyState() {
@@ -41,6 +46,8 @@ function ScheduleDocument() {
   useEffect(() => {
     document.title = effectiveTitle;
   }, [effectiveTitle]);
+  // Stamp the PDF filename with date + time at print, restoring the clean tab title after.
+  usePrintFilename(effectiveTitle);
 
   return (
     <main className="mx-auto max-w-[1400px] px-4 py-6 md:px-6">
@@ -70,6 +77,7 @@ function ScheduleDocument() {
         <>
           {/* Schedule view. Prints as page 1 regardless of the on-screen tab. */}
           <section className={`${view === 'grid' ? '' : 'hidden'} print:block`}>
+            <PaintBar />
             <div className="hidden space-y-8 md:block print:block">
               {Array.from({ length: weekCount }, (_, weekIndex) => (
                 <WeekTable key={weekIndex} weekIndex={weekIndex} />
@@ -96,12 +104,17 @@ export default function App() {
   return (
     <DisplayModeProvider>
       <ViewProvider>
-        <ScheduleProvider>
-          <div className="min-h-screen bg-paper font-sans text-ink">
-            <Toolbar />
-            <ScheduleDocument />
-          </div>
-        </ScheduleProvider>
+        <PresetsProvider>
+          <PaintProvider>
+            <ScheduleProvider>
+              <div className="min-h-screen bg-paper font-sans text-ink">
+                <Toolbar />
+                <ScheduleDocument />
+                <UndoFlash />
+              </div>
+            </ScheduleProvider>
+          </PaintProvider>
+        </PresetsProvider>
       </ViewProvider>
     </DisplayModeProvider>
   );

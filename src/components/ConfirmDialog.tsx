@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
+import { Modal } from './Modal.tsx';
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -11,9 +12,10 @@ interface ConfirmDialogProps {
 }
 
 /**
- * A small, accessible confirmation modal — the in-app replacement for
- * window.confirm(). Escape or a backdrop click cancels; focus moves to Cancel on
- * open and returns to the trigger on close. Chrome, so it never prints.
+ * A confirmation modal — the in-app replacement for window.confirm(). Built on
+ * the shared Modal shell; focus lands on Cancel so the safe choice is the
+ * default. The destructive button stays ink (not `--alert`, which is reserved
+ * for coverage/rule warnings).
  */
 export function ConfirmDialog({
   open,
@@ -25,63 +27,38 @@ export function ConfirmDialog({
   onCancel,
 }: ConfirmDialogProps) {
   const cancelRef = useRef<HTMLButtonElement>(null);
-  const restoreRef = useRef<Element | null>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    restoreRef.current = document.activeElement;
-    cancelRef.current?.focus();
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onCancel();
-    };
-    document.addEventListener('keydown', onKey);
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      if (restoreRef.current instanceof HTMLElement) restoreRef.current.focus();
-    };
-  }, [open, onCancel]);
-
-  if (!open) return null;
 
   return (
-    <div
-      className="no-print fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-4"
-      role="presentation"
-      onClick={(event) => {
-        if (event.target === event.currentTarget) onCancel();
-      }}
+    <Modal
+      open={open}
+      onClose={onCancel}
+      labelledBy="confirm-dialog-title"
+      describedBy="confirm-dialog-message"
+      initialFocusRef={cancelRef}
     >
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="confirm-dialog-title"
-        aria-describedby="confirm-dialog-message"
-        className="w-full max-w-sm rounded-sm border border-rule bg-paper p-5"
-      >
-        <h2 id="confirm-dialog-title" className="text-base font-semibold">
-          {title}
-        </h2>
-        <p id="confirm-dialog-message" className="mt-2 text-sm text-ink/70">
-          {message}
-        </p>
-        <div className="mt-5 flex justify-end gap-2">
-          <button
-            ref={cancelRef}
-            type="button"
-            onClick={onCancel}
-            className="rounded-sm border border-rule bg-paper px-3 py-1.5 text-sm font-medium text-ink hover:bg-ink/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/60"
-          >
-            {cancelLabel}
-          </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            className="rounded-sm bg-ink px-3 py-1.5 text-sm font-medium text-paper hover:bg-ink/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-ink/60"
-          >
-            {confirmLabel}
-          </button>
-        </div>
+      <h2 id="confirm-dialog-title" className="text-base font-semibold">
+        {title}
+      </h2>
+      <p id="confirm-dialog-message" className="mt-2 text-sm text-ink/70">
+        {message}
+      </p>
+      <div className="mt-5 flex justify-end gap-2">
+        <button
+          ref={cancelRef}
+          type="button"
+          onClick={onCancel}
+          className="rounded-sm border border-rule bg-paper px-3 py-1.5 text-sm font-medium text-ink hover:bg-ink/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/60"
+        >
+          {cancelLabel}
+        </button>
+        <button
+          type="button"
+          onClick={onConfirm}
+          className="rounded-sm bg-ink px-3 py-1.5 text-sm font-medium text-paper hover:bg-ink/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-ink/60"
+        >
+          {confirmLabel}
+        </button>
       </div>
-    </div>
+    </Modal>
   );
 }

@@ -3,6 +3,8 @@ import { addDays, formatDateRange, formatDayHeader } from '../lib/dates.ts';
 import { duplicateNameKeys, normalizeName } from '../lib/people.ts';
 import { useSchedule } from '../state/ScheduleContext.tsx';
 import { useDisplayMode } from '../state/DisplayModeContext.tsx';
+import { usePresets } from '../state/PresetsContext.tsx';
+import { usePaint } from '../state/PaintContext.tsx';
 import { PersonRow } from './PersonRow.tsx';
 
 interface WeekTableProps {
@@ -13,6 +15,10 @@ interface WeekTableProps {
 export function WeekTable({ weekIndex }: WeekTableProps) {
   const { schedule, dispatch } = useSchedule();
   const { displayMode } = useDisplayMode();
+  const { presets } = usePresets();
+  const { armedPresetId } = usePaint();
+  const armedPreset =
+    presets.find((preset) => preset.id === armedPresetId) ?? null;
   const { startDate, people } = schedule;
   const firstDay = weekIndex * DAYS_PER_WEEK;
   const weekStart = addDays(startDate, firstDay);
@@ -70,6 +76,8 @@ export function WeekTable({ weekIndex }: WeekTableProps) {
                 schedule={schedule}
                 dispatch={dispatch}
                 displayMode={displayMode}
+                presets={presets}
+                armedPreset={armedPreset}
                 isDuplicate={isDuplicate(person.name)}
               />
             ))}

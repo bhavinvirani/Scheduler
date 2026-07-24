@@ -1,8 +1,14 @@
-import { useEffect, useReducer } from 'react';
+import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import type { Dispatch } from 'react';
 import type { Schedule } from '../types.ts';
 import type { Action } from './scheduleReducer.ts';
-import { createEmptySchedule, scheduleReducer } from './scheduleReducer.ts';
+import {
+  changedAssignmentKeys,
+  createEmptySchedule,
+  scheduleReducer,
+} from './scheduleReducer.ts';
+import { initHistory, withHistory } from './history.ts';
+import type { HistoryState, WithHistoryAction } from './history.ts';
 import {
   STORAGE_KEY,
   deserializeSchedule,
@@ -11,29 +17,71 @@ import {
 
 const AUTOSAVE_DEBOUNCE_MS = 300;
 
-/** Hydrate from localStorage, guarding against missing/corrupt/blocked storage. */
-function initSchedule(): Schedule {
+/**
+ * The schedule reducer wrapped with undo/redo. Consecutive keystrokes in one
+ * name field (or the title) collapse into a single undo step; every other edit
+ * — including each painted or menu-filled cell — is its own step. `LOAD` (a
+ * fresh hydrate) clears history so you can't undo across documents.
+ */
+const historyReducer = withHistory(scheduleReducer, {
+  isReset: (action) => action.type === 'LOAD',
+  coalesceKey: (action) => {
+    switch (action.type) {
+      case 'RENAME_PERSON':
+        return `rename:${action.id}`;
+      case 'SET_TITLE':
+        return 'title';
+      default:
+        return null;
+    }
+  },
+});
+
+/** Hydrate from localStorage (guarded) and seed an empty history around it. */
+function initHistoryState(): HistoryState<Schedule> {
+  let present: Schedule;
   try {
-    return (
+    present =
       deserializeSchedule(localStorage.getItem(STORAGE_KEY)) ??
-      createEmptySchedule()
-    );
+      createEmptySchedule();
   } catch {
     // localStorage access itself can throw (private mode, blocked cookies).
-    return createEmptySchedule();
+    present = createEmptySchedule();
   }
+  return initHistory(present);
+}
+
+export interface PersistedSchedule {
+  schedule: Schedule;
+  dispatch: Dispatch<WithHistoryAction<Action>>;
+  canUndo: boolean;
+  canRedo: boolean;
+  /** Run an undo, remembering which cells changed so the UI can flash them. */
+  undo: () => void;
+  redo: () => void;
+  /** Assignment keys the last undo/redo touched, and a bump-on-each nonce. */
+  flashedKeys: ReadonlySet<string>;
+  flashNonce: number;
 }
 
 /**
- * The schedule reducer wired to localStorage: hydrated once on mount, saved on
- * every change with a short debounce so a burst of edits writes once.
+ * The schedule wired to localStorage and undo/redo: hydrated once on mount,
+ * `present` saved on every change with a short debounce. Only `present`
+ * persists — undo history is session-only, as users expect.
  */
-export function usePersistedSchedule(): readonly [Schedule, Dispatch<Action>] {
-  const [schedule, dispatch] = useReducer(
-    scheduleReducer,
+export function usePersistedSchedule(): PersistedSchedule {
+  const [history, dispatch] = useReducer(
+    historyReducer,
     undefined,
-    initSchedule,
+    initHistoryState,
   );
+  const schedule = history.present;
+
+  // Which cells the last undo/redo changed — drives the transient cell flash.
+  const [flash, setFlash] = useState<{
+    keys: ReadonlySet<string>;
+    nonce: number;
+  }>({ keys: new Set(), nonce: 0 });
 
   useEffect(() => {
     const handle = window.setTimeout(() => {
@@ -46,5 +94,39 @@ export function usePersistedSchedule(): readonly [Schedule, Dispatch<Action>] {
     return () => window.clearTimeout(handle);
   }, [schedule]);
 
-  return [schedule, dispatch] as const;
+  // undo/redo flag the cells they will change (present vs the restore target)
+  // before dispatching, so the flash effect can highlight exactly what moved.
+  // Read history through a ref so these callbacks stay reference-stable across
+  // renders — otherwise every edit would re-subscribe the keyboard shortcuts.
+  const historyRef = useRef(history);
+  historyRef.current = history;
+
+  const undo = useCallback(() => {
+    const current = historyRef.current;
+    if (current.past.length === 0) return;
+    const target = current.past[current.past.length - 1]!;
+    const keys = changedAssignmentKeys(current.present, target);
+    setFlash((prev) => ({ keys: new Set(keys), nonce: prev.nonce + 1 }));
+    dispatch({ type: 'UNDO' });
+  }, []);
+
+  const redo = useCallback(() => {
+    const current = historyRef.current;
+    if (current.future.length === 0) return;
+    const target = current.future[0]!;
+    const keys = changedAssignmentKeys(current.present, target);
+    setFlash((prev) => ({ keys: new Set(keys), nonce: prev.nonce + 1 }));
+    dispatch({ type: 'REDO' });
+  }, []);
+
+  return {
+    schedule,
+    dispatch,
+    canUndo: history.past.length > 0,
+    canRedo: history.future.length > 0,
+    undo,
+    redo,
+    flashedKeys: flash.keys,
+    flashNonce: flash.nonce,
+  };
 }

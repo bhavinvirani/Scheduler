@@ -26,6 +26,19 @@ export const MINUTES_PER_DAY = 24 * 60;
 
 export const DAYS_PER_WEEK = 7;
 
+/** Start/duration a brand-new preset begins with (9:00 AM, 8h) before editing. */
+export const NEW_PRESET_START_MINUTES = 9 * 60;
+
+/**
+ * Seed presets a fresh install (or "restore defaults") starts with. Ids are
+ * assigned at runtime — a seed carries no identity, only the shift it describes.
+ */
+export const DEFAULT_PRESET_SEEDS = [
+  { name: 'Day', start: 7 * 60, duration: 8 * 60 },
+  { name: 'Evening', start: 15 * 60, duration: 8 * 60 },
+  { name: 'Night', start: 23 * 60, duration: 8 * 60 },
+] as const;
+
 /** Weekday labels, Monday first — the week always starts on Monday (PLAN.md §1). */
 export const DAY_LABELS = [
   'Mon',

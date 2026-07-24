@@ -34,6 +34,22 @@ export interface Person {
 /** `${personId}:${dayIndex}` where dayIndex is 0..13 (day 0 = week 1 Monday). */
 export type CellKey = string;
 
+/**
+ * A reusable, named shift template for one-tap fill. Stored as the same
+ * `{ start, duration }` a real shift uses, so applying a preset is just a
+ * `SET_ASSIGNMENT` with `{ kind: 'shift', ... }` — no new shift representation.
+ * Presets live outside the schedule (their own store) so the library survives
+ * across schedules, Clear, and Undo.
+ */
+export interface ShiftPreset {
+  /** crypto.randomUUID(). Stable identity — never the array index. */
+  id: string;
+  /** Display name, e.g. "Day". May be empty; the UI falls back to the time range. */
+  name: string;
+  start: Minutes;
+  duration: Minutes;
+}
+
 export interface Schedule {
   /** Schema version. Bump on any breaking change; migrate on load. */
   version: 1;
