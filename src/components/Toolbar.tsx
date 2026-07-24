@@ -5,6 +5,7 @@ import { useView } from '../state/ViewContext.tsx';
 import { useUndoRedoShortcuts } from '../hooks/useUndoRedoShortcuts.ts';
 import { ConfirmDialog } from './ConfirmDialog.tsx';
 import { PresetManager } from './PresetManager.tsx';
+import { PrintDialog } from './PrintDialog.tsx';
 import { ShareModal } from './ShareModal.tsx';
 
 const buttonBase =
@@ -36,6 +37,7 @@ export function Toolbar() {
   const [confirmClearOpen, setConfirmClearOpen] = useState(false);
   const [presetsOpen, setPresetsOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [printOpen, setPrintOpen] = useState(false);
 
   useUndoRedoShortcuts(undo, redo);
 
@@ -43,6 +45,22 @@ export function Toolbar() {
     // Nothing to clear — don't pop a dialog over an empty grid.
     if (Object.keys(schedule.assignments).length === 0) return;
     setConfirmClearOpen(true);
+  };
+
+  const handlePrintChoice = (includeSummary: boolean) => {
+    setPrintOpen(false);
+    // Toggle the print scope on <html> synchronously, then print. `print.css`
+    // hides the hours page while `print-schedule-only` is set; afterprint clears
+    // it so the on-screen document and the next print aren't affected.
+    const root = document.documentElement;
+    root.classList.toggle('print-schedule-only', !includeSummary);
+    window.addEventListener(
+      'afterprint',
+      () => root.classList.remove('print-schedule-only'),
+      { once: true },
+    );
+    // Let the dialog unmount before the print preview paints.
+    requestAnimationFrame(() => window.print());
   };
 
   return (
@@ -230,7 +248,7 @@ export function Toolbar() {
             </button>
             <button
               type="button"
-              onClick={() => window.print()}
+              onClick={() => setPrintOpen(true)}
               className={primaryButton}
             >
               Print / PDF
@@ -253,6 +271,12 @@ export function Toolbar() {
       />
 
       <PresetManager open={presetsOpen} onClose={() => setPresetsOpen(false)} />
+
+      <PrintDialog
+        open={printOpen}
+        onChoose={handlePrintChoice}
+        onCancel={() => setPrintOpen(false)}
+      />
 
       <ShareModal open={shareOpen} onClose={() => setShareOpen(false)} />
     </>

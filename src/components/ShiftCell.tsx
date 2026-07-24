@@ -23,6 +23,8 @@ interface ShiftCellProps {
   cellLabel: string;
   /** In a shared view-only roster the cell is a static label, not editable. */
   readOnly?: boolean;
+  /** Blocks editing/painting until the person has a name. */
+  disabled?: boolean;
 }
 
 function ShiftCellComponent({
@@ -35,6 +37,7 @@ function ShiftCellComponent({
   armedPreset,
   cellLabel,
   readOnly = false,
+  disabled = false,
 }: ShiftCellProps) {
   const tdClass = `border border-rule p-0 align-top ${fillClass(assignment, displayMode)}`;
 
@@ -57,7 +60,7 @@ function ShiftCellComponent({
 
       {/* Screen: paint target when a preset is armed, else the editable controls. */}
       <div className="print:hidden">
-        {armedPreset ? (
+        {armedPreset && !disabled ? (
           <button
             type="button"
             onClick={() =>
@@ -86,6 +89,7 @@ function ShiftCellComponent({
             dispatch={dispatch}
             presets={presets}
             cellLabel={cellLabel}
+            disabled={disabled}
           />
         )}
       </div>

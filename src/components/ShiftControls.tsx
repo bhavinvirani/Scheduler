@@ -26,6 +26,8 @@ interface ShiftControlsProps {
   cellLabel: string;
   /** 'compact' for the dense grid, 'comfortable' for tappable mobile rows. */
   size?: 'compact' | 'comfortable';
+  /** Blocks editing until the person has a name (can't schedule a blank row). */
+  disabled?: boolean;
 }
 
 /**
@@ -41,6 +43,7 @@ export function ShiftControls({
   presets,
   cellLabel,
   size = 'compact',
+  disabled = false,
 }: ShiftControlsProps) {
   const setValue = (value: Assignment) =>
     dispatch({ type: 'SET_ASSIGNMENT', personId, dayIndex, value });
@@ -78,7 +81,11 @@ export function ShiftControls({
   const selectClass =
     `w-full cursor-pointer appearance-none bg-transparent px-1.5 font-mono ${sizing} ` +
     'font-medium tabular-nums leading-tight outline-none ' +
-    'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ink/50';
+    'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ink/50 ' +
+    'disabled:cursor-not-allowed disabled:opacity-40';
+  const disabledHint = disabled
+    ? 'Add a name to schedule this person'
+    : undefined;
 
   return (
     <div className="flex flex-col">
@@ -86,6 +93,8 @@ export function ShiftControls({
         aria-label={`${cellLabel} — start time or status`}
         value={primaryValue}
         onChange={(event) => handleStatusOrStart(event.target.value)}
+        disabled={disabled}
+        title={disabledHint}
         className={selectClass}
       >
         {presets.length > 0 && (
@@ -124,6 +133,8 @@ export function ShiftControls({
               duration: Number(event.target.value),
             })
           }
+          disabled={disabled}
+          title={disabledHint}
           className={`${selectClass} border-t border-black/10`}
         >
           {durationOptions(assignment.start).map((option) => (

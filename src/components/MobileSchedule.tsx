@@ -131,6 +131,7 @@ function PersonCard({
                         presets={presets}
                         cellLabel={`${person.name || 'Unnamed'} — ${header.weekday} ${header.date}`}
                         size="comfortable"
+                        disabled={person.name.trim() === ''}
                       />
                     )}
                   </div>
