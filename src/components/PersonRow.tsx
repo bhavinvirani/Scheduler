@@ -116,6 +116,7 @@ export function PersonRow({
             armedPreset={armedPreset}
             cellLabel={`${person.name || 'Unnamed'} — ${header.weekday} ${header.date}`}
             readOnly={readOnly}
+            disabled={!readOnly && person.name.trim() === ''}
           />
         );
       })}
