@@ -48,6 +48,9 @@ export function isValidSchedule(value: unknown): value is Schedule {
     return false;
   }
   if (value.weekCount !== 1 && value.weekCount !== 2) return false;
+  // title is optional (older saves lack it); when present it must be a string.
+  if (value.title !== undefined && typeof value.title !== 'string')
+    return false;
   if (!Array.isArray(value.people) || !value.people.every(isPerson)) {
     return false;
   }

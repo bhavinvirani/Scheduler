@@ -110,4 +110,13 @@ describe('isValidSchedule — untrusted input', () => {
     expect(isValidSchedule('schedule')).toBe(false);
     expect(isValidSchedule([VALID])).toBe(false);
   });
+
+  it('accepts an optional string title, present or absent', () => {
+    expect(isValidSchedule({ ...VALID, title: 'Ward A — Nights' })).toBe(true);
+    expect(isValidSchedule(VALID)).toBe(true); // absent (older saves) still valid
+  });
+
+  it('rejects a non-string title', () => {
+    expect(isValidSchedule({ ...VALID, title: 42 })).toBe(false);
+  });
 });

@@ -1,4 +1,5 @@
 import { useSchedule } from '../state/ScheduleContext.tsx';
+import { useDisplayMode } from '../state/DisplayModeContext.tsx';
 
 const buttonBase =
   'inline-flex items-center gap-1.5 rounded-sm px-3 py-1.5 text-sm font-medium ' +
@@ -10,6 +11,7 @@ const secondaryButton = `${buttonBase} border border-rule bg-paper text-ink hove
 
 export function Toolbar() {
   const { schedule, dispatch } = useSchedule();
+  const { displayMode, setDisplayMode } = useDisplayMode();
   const { startDate, weekCount, people } = schedule;
   const canCopyWeek = weekCount === 2 && people.length > 0;
 
@@ -67,6 +69,41 @@ export function Toolbar() {
                 }`}
               >
                 {count} {count === 1 ? 'week' : 'weeks'}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1 text-xs font-medium text-ink/60">
+          Colors
+          <div
+            role="group"
+            aria-label="Color mode"
+            className="inline-flex overflow-hidden rounded-sm border border-rule"
+          >
+            {(
+              [
+                ['color', 'Color'],
+                ['mono', 'B&W'],
+              ] as const
+            ).map(([mode, label]) => (
+              <button
+                key={mode}
+                type="button"
+                aria-pressed={displayMode === mode}
+                onClick={() => setDisplayMode(mode)}
+                title={
+                  mode === 'mono'
+                    ? 'Black & white — best for printing'
+                    : 'Color shifts by time of day'
+                }
+                className={`px-3 py-1 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ink/60 ${
+                  displayMode === mode
+                    ? 'bg-ink text-paper'
+                    : 'bg-paper text-ink hover:bg-ink/5'
+                }`}
+              >
+                {label}
               </button>
             ))}
           </div>

@@ -20,6 +20,7 @@ export type Action =
     }
   | { type: 'SET_WEEK_COUNT'; count: 1 | 2 }
   | { type: 'SET_START_DATE'; iso: string }
+  | { type: 'SET_TITLE'; title: string }
   | { type: 'COPY_WEEK_1_TO_2' }
   | { type: 'CLEAR_ALL' }
   | { type: 'LOAD'; schedule: Schedule };
@@ -115,6 +116,10 @@ export function scheduleReducer(state: Schedule, action: Action): Schedule {
       // real calendar date so a bad value can never corrupt startDate.
       if (!isValidISODate(action.iso)) return state;
       return { ...state, startDate: mondayOf(action.iso) };
+    }
+
+    case 'SET_TITLE': {
+      return { ...state, title: action.title };
     }
 
     case 'COPY_WEEK_1_TO_2': {

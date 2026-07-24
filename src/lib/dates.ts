@@ -70,9 +70,9 @@ export function mondayOf(iso: string): string {
 }
 
 /**
- * Split a date into the two lines a column header shows: a short weekday
- * (`Mon`) over a short month/day (`Jul 27`). Fixed to en-US so the header reads
- * the same everywhere — this is a document, not a localized UI.
+ * Split a date into the two lines a column header shows: the full weekday
+ * (`Monday`) over a short month/day (`Jul 27`). Fixed to en-US so the header
+ * reads the same everywhere — this is a document, not a localized UI.
  */
 export function formatDayHeader(iso: string): {
   weekday: string;
@@ -80,7 +80,7 @@ export function formatDayHeader(iso: string): {
 } {
   const date = parseISODateLocal(iso);
   return {
-    weekday: date.toLocaleDateString('en-US', { weekday: 'short' }),
+    weekday: date.toLocaleDateString('en-US', { weekday: 'long' }),
     date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
   };
 }

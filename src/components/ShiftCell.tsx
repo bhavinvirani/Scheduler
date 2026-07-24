@@ -2,6 +2,7 @@ import { memo } from 'react';
 import type { Dispatch } from 'react';
 import type { Assignment } from '../types.ts';
 import type { Action } from '../state/scheduleReducer.ts';
+import type { DisplayMode } from '../state/DisplayModeContext.tsx';
 import { DEFAULT_SHIFT_DURATION_MINUTES } from '../constants.ts';
 import {
   assignmentLabel,
@@ -21,13 +22,22 @@ const STATUS_OPTIONS = [
 ] as const;
 
 const SHIFT_FILL: Record<ReturnType<typeof shiftCategory>, string> = {
-  day: 'bg-day text-paper',
-  evening: 'bg-evening text-paper',
-  night: 'bg-night text-paper',
+  day: 'bg-day text-white',
+  evening: 'bg-evening text-white',
+  night: 'bg-night text-white',
 };
 
-/** Background + text color for a cell, from its assignment. */
-function fillClass(assignment: Assignment): string {
+/**
+ * Background + text color for a cell. In black-and-white mode every cell is
+ * white with black text so it prints cleanly and the shift time stays legible;
+ * color mode fills shifts by their time of day.
+ */
+function fillClass(assignment: Assignment, mode: DisplayMode): string {
+  if (mode === 'mono') {
+    if (assignment.kind === 'shift') return 'bg-white text-ink';
+    if (assignment.kind === 'empty') return 'bg-white text-ink/40';
+    return 'bg-white text-ink/60'; // off / pto / holiday — recessed
+  }
   if (assignment.kind === 'shift')
     return SHIFT_FILL[shiftCategory(assignment.start)];
   if (assignment.kind === 'empty') return 'bg-paper text-ink/40';
@@ -36,7 +46,7 @@ function fillClass(assignment: Assignment): string {
 
 const selectClass =
   'w-full cursor-pointer appearance-none bg-transparent px-1.5 py-1 ' +
-  'font-mono text-xs tabular-nums leading-tight outline-none ' +
+  'font-mono text-xs font-medium tabular-nums leading-tight outline-none ' +
   'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ink/50';
 
 interface ShiftCellProps {
@@ -44,7 +54,8 @@ interface ShiftCellProps {
   dayIndex: number;
   assignment: Assignment;
   dispatch: Dispatch<Action>;
-  /** Human context for screen readers, e.g. "Ada — Mon Jul 27". */
+  displayMode: DisplayMode;
+  /** Human context for screen readers, e.g. "Ada — Monday Jul 20". */
   cellLabel: string;
 }
 
@@ -53,6 +64,7 @@ function ShiftCellComponent({
   dayIndex,
   assignment,
   dispatch,
+  displayMode,
   cellLabel,
 }: ShiftCellProps) {
   const setValue = (value: Assignment) =>
@@ -78,30 +90,32 @@ function ShiftCellComponent({
     assignment.kind === 'shift' ? `t:${assignment.start}` : assignment.kind;
 
   return (
-    <td className={`border border-rule p-0 align-top ${fillClass(assignment)}`}>
+    <td
+      className={`border border-rule p-0 align-top ${fillClass(assignment, displayMode)}`}
+    >
       {/* Print: the selects don't render reliably, so show a static label. */}
-      <span className="hidden px-1.5 py-1 font-mono text-[8pt] leading-tight tabular-nums print:block">
+      <span className="hidden px-1.5 py-1 font-mono text-[8pt] font-medium leading-tight tabular-nums print:block">
         {assignmentLabel(assignment)}
       </span>
 
-      {/* Screen: the editable controls. */}
+      {/* Screen: the editable controls. Times come first, then statuses. */}
       <div className="flex flex-col print:hidden">
         <select
-          aria-label={`${cellLabel} — status or start time`}
+          aria-label={`${cellLabel} — start time or status`}
           value={primaryValue}
           onChange={(event) => handleStatusOrStart(event.target.value)}
           className={selectClass}
         >
-          <optgroup label="Status">
-            {STATUS_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
+          <optgroup label="Start time">
+            {START_OPTIONS.map((option) => (
+              <option key={option.value} value={`t:${option.value}`}>
                 {option.label}
               </option>
             ))}
           </optgroup>
-          <optgroup label="Start time">
-            {START_OPTIONS.map((option) => (
-              <option key={option.value} value={`t:${option.value}`}>
+          <optgroup label="Status">
+            {STATUS_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
@@ -119,7 +133,7 @@ function ShiftCellComponent({
                 duration: Number(event.target.value),
               })
             }
-            className={`${selectClass} border-t border-paper/25`}
+            className={`${selectClass} border-t border-black/10`}
           >
             {durationOptions(assignment.start).map((option) => (
               <option key={option.value} value={option.value}>
@@ -136,6 +150,7 @@ function ShiftCellComponent({
 /**
  * Memoized so a change to one cell doesn't re-render the other ~349. Relies on
  * `getAssignment` returning stable references (a shared frozen empty, and the
- * reducer preserving untouched assignment objects).
+ * reducer preserving untouched assignment objects); `displayMode` changes rarely
+ * and re-renders every cell by design.
  */
 export const ShiftCell = memo(ShiftCellComponent);

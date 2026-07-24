@@ -18,6 +18,9 @@ export const SHIFT_DURATION_STEP_MINUTES = 30;
 /** Duration applied when a start time is first chosen for an empty cell (8h). */
 export const DEFAULT_SHIFT_DURATION_MINUTES = 8 * 60;
 
+/** Title shown on the schedule (and PDF) when no custom one is set. */
+export const DEFAULT_SCHEDULE_TITLE = 'Shift Schedule';
+
 /** Minutes in a calendar day. Used to wrap end-of-shift times past midnight. */
 export const MINUTES_PER_DAY = 24 * 60;
 

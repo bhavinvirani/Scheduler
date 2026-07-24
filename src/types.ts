@@ -42,4 +42,10 @@ export interface Schedule {
   weekCount: 1 | 2;
   people: Person[];
   assignments: Record<CellKey, Assignment>;
+  /**
+   * Optional document title shown at the top of the printed schedule and used
+   * as the PDF's title. Empty/absent falls back to a default. Optional so older
+   * saved schedules (which never had it) still load.
+   */
+  title?: string;
 }

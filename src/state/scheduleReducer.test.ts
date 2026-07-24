@@ -347,6 +347,23 @@ describe('SET_START_DATE', () => {
   });
 });
 
+describe('SET_TITLE', () => {
+  it('sets a custom schedule title', () => {
+    const state = createEmptySchedule(MONDAY);
+    const next = scheduleReducer(state, {
+      type: 'SET_TITLE',
+      title: 'Night Rotation',
+    });
+    expect(next.title).toBe('Night Rotation');
+  });
+
+  it('does not mutate the previous state', () => {
+    const state = createEmptySchedule(MONDAY);
+    scheduleReducer(state, { type: 'SET_TITLE', title: 'X' });
+    expect(state.title).toBeUndefined();
+  });
+});
+
 describe('CLEAR_ALL', () => {
   it('empties the grid but keeps the roster, dates, and week count', () => {
     const { state, id } = addPerson(createEmptySchedule(MONDAY));

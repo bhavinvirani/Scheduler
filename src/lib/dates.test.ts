@@ -100,11 +100,12 @@ describe('addDays', () => {
 });
 
 describe('formatDayHeader', () => {
-  it('splits a date into a short weekday and a short month/day label', () => {
+  it('splits a date into a full weekday and a short month/day label', () => {
     expect(formatDayHeader('2026-07-27')).toEqual({
-      weekday: 'Mon',
+      weekday: 'Monday',
       date: 'Jul 27',
     });
+    expect(formatDayHeader('2026-08-02').weekday).toBe('Sunday');
   });
 });
 
