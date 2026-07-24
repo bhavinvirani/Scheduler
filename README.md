@@ -2,7 +2,7 @@
 
 # 🗓️ Shift Schedule Builder
 
-A small, no-fuss tool for putting together a two-week staff rota and printing it.
+A small, no-fuss tool for putting together a two-week staff roster and printing it.
 It runs in your browser, saves as you go, and doesn't need an account or a server.
 
 [**Open it here →**](https://bhavinvirani.github.io/Scheduler/)
@@ -25,7 +25,7 @@ It runs in your browser, saves as you go, and doesn't need an account or a serve
 
 ## Why it exists
 
-A spreadsheet can hold a rota, but it makes you work for it merged cells, times
+A spreadsheet can hold a roster, but it makes you work for it merged cells, times
 that sort the wrong way, a totals formula that breaks the moment someone works an
 overnight, and a printout that never quite fits the page.
 
@@ -61,7 +61,7 @@ lives in your browser.
 </tr>
 </table>
 
-## Filling in a rota
+## Filling in a roster
 
 1. **Open the [app](https://bhavinvirani.github.io/Scheduler/).** There's nothing to install.
 2. **Set the week** pick the starting Monday and choose one or two weeks.
@@ -83,7 +83,7 @@ Already built week one? **Copy week 1 → 2** mirrors it so you only tweak the d
 
 There's no server and nothing is tracked. Your schedule and your presets sit in
 your browser's local storage and stay on your machine. If you clear your browser
-data they'll go with it, so to keep a rota around, hold on to the PDF or just
+data they'll go with it, so to keep a roster around, hold on to the PDF or just
 rebuild it, it doesn't take long.
 
 ## Running your own copy
