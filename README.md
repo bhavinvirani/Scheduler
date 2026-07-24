@@ -75,7 +75,7 @@ lives in your browser.
 5. **Adjust your presets** any time with **Presets…** to rename them, change their times, add new ones, or reset to the defaults.
 6. **Add a title** if you want one (click above the grid). It shows on the printout and in the PDF's file name.
 7. **Check the hours** under **View → Summary**.
-8. **Print** with **Print / PDF**, then choose _Save as PDF_ (A4 landscape). Page one is the grid, page two is the summary.
+8. **Print** with **Print / PDF**. Pick whether to include just the schedule or the schedule plus the hours page, then choose _Save as PDF_ (A4 landscape). With both, page one is the grid and page two is the summary.
 9. **Share it** by clicking **Share link** and pasting the copied link in your team chat. Anyone who opens it gets a read-only roster to view and print (grid only, no summary), and it never disturbs their own saved schedule.
 
 Already built week one? **Copy week 1 → 2** mirrors it so you only tweak the differences.

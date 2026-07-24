@@ -97,9 +97,10 @@ function ScheduleDocument() {
             </div>
           </section>
 
-          {/* Hours summary. Prints on a fresh page (page 2) after the schedule. */}
+          {/* Hours summary. Prints on a fresh page (page 2) after the schedule,
+              unless the download dialog chose "schedule only" (see print.css). */}
           <section
-            className={`break-before-page ${view === 'summary' ? '' : 'hidden'} print:block`}
+            className={`summary-print break-before-page ${view === 'summary' ? '' : 'hidden'} print:block`}
           >
             <SummaryView />
           </section>

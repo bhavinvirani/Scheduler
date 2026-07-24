@@ -31,6 +31,12 @@
     position: static !important;
   }
 
+  /* "Schedule only" export: the download dialog sets this on <html> to drop the
+     hours page so just the grid prints. Cleared again after printing. */
+  .print-schedule-only .summary-print {
+    display: none !important;
+  }
+
   /* Clean white page — no wasted ink on the app's off-white background. */
   html,
   body {
