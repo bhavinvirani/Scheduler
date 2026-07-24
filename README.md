@@ -1,6 +1,6 @@
 <div align="center">
 
-# Shift Schedule Builder
+# 🗓️ Shift Schedule Builder
 
 A small, no-fuss tool for putting together a two-week staff rota and printing it.
 It runs in your browser, saves as you go, and doesn't need an account or a server.
@@ -8,12 +8,18 @@ It runs in your browser, saves as you go, and doesn't need an account or a serve
 [**Open it here →**](https://bhavinvirani.github.io/Scheduler/)
 
 ![License: Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-black)
+![No backend](https://img.shields.io/badge/backend-none-black)
+![Works offline](https://img.shields.io/badge/works-offline-black)
+![Prints to PDF](https://img.shields.io/badge/prints_to-PDF-black)
+![React 18](https://img.shields.io/badge/React-18-black)
+![TypeScript strict](https://img.shields.io/badge/TypeScript-strict-black)
+![PRs welcome](https://img.shields.io/badge/PRs-welcome-black)
 
 ![The schedule grid](docs/screenshots/grid.png)
 
 </div>
 
-## The idea
+## Why it exists
 
 A spreadsheet can hold a rota, but it makes you work for it — merged cells, times
 that sort the wrong way, a totals formula that breaks the moment someone works an
@@ -21,8 +27,12 @@ overnight, and a printout that never quite fits the page.
 
 This does the same job with none of that. You type in names, pick a start time and
 a length for each day, and print. Nothing gets uploaded anywhere; the whole thing
-lives in your browser. It's meant for small teams — a café, a clinic, a front
-desk, a shop floor — where someone just needs a clear fortnight on paper.
+lives in your browser.
+
+- 🧑‍🤝‍🧑 **Built for small teams** — a café, a clinic, a front desk, a ward, a shop floor.
+- 🖨️ **Print-first** — what's on screen is what prints; the PDF isn't a separate export.
+- 🔒 **Yours only** — no login, no cloud, no tracking. It just saves to your browser.
+- ⚡ **Quick to fill** — reusable presets, click-to-paint, and proper undo/redo.
 
 ## What it does
 
