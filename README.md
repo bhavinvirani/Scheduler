@@ -1,52 +1,137 @@
+<div align="center">
+
 # Shift Schedule Builder
 
-A single-page, no-backend web app for building bi-weekly shift schedules and
-printing them straight to PDF. Type names down the left, pick a start time and a
-shift length per day, and print. No account, no server — your data lives in your
-browser's `localStorage`.
+A small, no-fuss tool for putting together a two-week staff rota and printing it.
+It runs in your browser, saves as you go, and doesn't need an account or a server.
 
-> **Why not a spreadsheet?** A spreadsheet can hold the same data; it can't show
-> you that nobody is covering 3AM–7AM on the second Thursday. That live coverage
-> view (Phase 3) is the whole point.
+[**Open it here →**](https://bhavinvirani.github.io/Scheduler/)
 
-## Tech
+![License: Apache 2.0](https://img.shields.io/badge/license-Apache_2.0-black)
 
-Vite · React 18 · TypeScript (strict) · Tailwind CSS · Vitest. Static build,
-deployed to GitHub Pages via GitHub Actions.
+![The schedule grid](docs/screenshots/grid.png)
 
-## Getting started
+</div>
+
+## The idea
+
+A spreadsheet can hold a rota, but it makes you work for it — merged cells, times
+that sort the wrong way, a totals formula that breaks the moment someone works an
+overnight, and a printout that never quite fits the page.
+
+This does the same job with none of that. You type in names, pick a start time and
+a length for each day, and print. Nothing gets uploaded anywhere; the whole thing
+lives in your browser. It's meant for small teams — a café, a clinic, a front
+desk, a shop floor — where someone just needs a clear fortnight on paper.
+
+## What it does
+
+| | |
+|---|---|
+| **One or two weeks** | Pick a Monday and build a single week or a full fortnight. |
+| **Shifts as start + length** | You choose when a shift starts and how long it runs, so an overnight (11 PM → 7 AM) is easy to enter and the hours always add up. |
+| **Off, PTO, holiday** | Mark a day as time off instead of a shift. |
+| **Presets** | Save the shifts you use all the time — Day, Evening, Night, whatever you like — and drop them in with a click. They're fully editable and stick around between schedules. |
+| **Paint them in** *(on desktop)* | Pick a preset, then click across the grid to fill cells with it. |
+| **Undo and redo** | The usual ⌘Z / Ctrl+Z. Whatever you change flashes and scrolls into view, so you don't lose your spot. |
+| **An hours page** | A second page adds up hours per person per week, the fortnight total, and off/PTO/holiday counts, with a blank Notes column for sign-off by hand. |
+| **Color or black & white** | Color-code shifts by time of day, or switch to B&W for a clean print on any office printer. |
+| **Print to PDF** | The grid is page one, the hours summary is page two — print double-sided for a single sheet. The file is named with your title and the date. |
+| **Works on a phone** | A card layout for editing on the go. |
+| **Saves itself, works offline** | Everything is kept in your browser and there's nothing to sign into. |
+
+<table>
+<tr>
+<td width="62%"><b>The hours page (prints as page 2)</b><br/><img src="docs/screenshots/summary.png" alt="Hours summary page" /></td>
+<td width="38%"><b>On a phone</b><br/><img src="docs/screenshots/mobile.png" alt="Mobile card layout" /></td>
+</tr>
+</table>
+
+## Filling in a rota
+
+1. **Open the [app](https://bhavinvirani.github.io/Scheduler/).** There's nothing to install.
+2. **Set the week** — pick the starting Monday and choose one or two weeks.
+3. **Add people** with **+ Add person** and type their names down the left.
+4. **Fill in the days.** For each cell you can:
+   - open the menu and pick a start time and a length, or choose Off / PTO / Holiday;
+   - pick one of your **presets** from the top of that menu; or
+   - on desktop, click a preset in the **Quick fill** bar to pick it up, then click cells to paint it in (press **Esc** when you're done).
+5. **Adjust your presets** any time with **Presets…** — rename them, change their times, add new ones, or reset to the defaults.
+6. **Add a title** if you want one (click above the grid). It shows on the printout and in the PDF's file name.
+7. **Check the hours** under **View → Summary**.
+8. **Print** with **Print / PDF**, then choose *Save as PDF* (A4 landscape). Page one is the grid, page two is the summary.
+
+Already built week one? **Copy week 1 → 2** mirrors it so you only tweak the differences.
+
+**Shortcuts:** `⌘Z` / `Ctrl+Z` to undo, `⇧⌘Z` / `Ctrl+Y` to redo, `Esc` to stop painting or close a dialog.
+
+## Where your data lives
+
+There's no server and nothing is tracked. Your schedule and your presets sit in
+your browser's local storage and stay on your machine. If you clear your browser
+data they'll go with it, so to keep a rota around, hold on to the PDF — or just
+rebuild it, it doesn't take long.
+
+## Running your own copy
+
+It's a plain static site, so it's easy to host yourself.
+
+**On GitHub Pages:** fork the repo, go to **Settings → Pages** and set the source
+to **GitHub Actions**, then push to `main`. The included workflow runs the tests,
+builds the site, and publishes it to `https://<your-username>.github.io/<repo>/`.
+
+**Anywhere else:**
 
 ```bash
 npm install
-npm run dev      # http://localhost:5173
+npm run build      # writes a static site to dist/
 ```
 
-## Scripts
+`dist/` is self-contained and uses relative paths, so you can drop it on Netlify,
+Vercel, an S3 bucket, or an intranet folder without any configuration.
 
-| Command              | What it does                                        |
-| -------------------- | --------------------------------------------------- |
-| `npm run dev`        | Start the Vite dev server                           |
-| `npm run build`      | Type-check and build to `dist/`                     |
-| `npm run preview`    | Serve the production build locally                  |
-| `npm test`           | Run the unit tests (pinned to `TZ=America/Toronto`) |
-| `npm run test:watch` | Run tests in watch mode                             |
-| `npm run typecheck`  | Type-check without emitting                         |
-| `npm run lint`       | Lint with ESLint                                    |
-| `npm run format`     | Format with Prettier                                |
+## Working on the code
 
-## How it's built
+```bash
+npm install
+npm run dev        # http://localhost:5173
+```
 
-The plan and its rationale live in [PLAN.md](./PLAN.md); the non-negotiable
-invariants for contributors (and AI assistants) live in [CLAUDE.md](./CLAUDE.md).
-Business logic is a pure reducer (`src/state/scheduleReducer.ts`) plus pure
-helpers (`src/lib/`), all unit-tested without a DOM.
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Type-check and build to `dist/` |
+| `npm run preview` | Serve the built site locally |
+| `npm test` | Run the tests (pinned to `TZ=America/Toronto`) |
+| `npm run test:watch` | Tests in watch mode |
+| `npm run typecheck` | Type-check only |
+| `npm run lint` | Lint with ESLint |
+| `npm run format` | Format with Prettier |
 
-## Deployment
+## Under the hood
 
-Pushing to `main` runs the test suite, builds the site, and publishes it to
-GitHub Pages (`.github/workflows/deploy.yml`). Enable Pages → "GitHub Actions"
-in the repository settings once, and every green push deploys.
+It's Vite, React 18, TypeScript (strict), Tailwind, and Vitest — a static build
+that ships to GitHub Pages through GitHub Actions.
+
+A couple of choices keep it tidy. A shift is stored as its start time plus a
+length, never a start-and-end, which is why an overnight can't be entered
+backwards and the hours always work out. All the state changes run through one
+small, pure reducer wrapped in a generic undo/redo history, both tested on their
+own without a browser. And there's a single set of components with two style
+sheets — one for the screen, one for print — so there's no separate "print view"
+to fall out of sync.
+
+If you want the longer story, it's in [PLAN.md](./PLAN.md), and the ground rules
+the code holds itself to are in [CLAUDE.md](./CLAUDE.md).
+
+## Contributing
+
+Issues and pull requests are welcome. Before you open a PR, please run the tests,
+the type-checker, and the linter, and add a test for any change in behaviour —
+the reducers and helpers are written test-first. The invariants in
+[CLAUDE.md](./CLAUDE.md) are worth a read; they explain the few things the project
+deliberately won't do (no backend, no export libraries, and so on).
 
 ## License
 
-MIT
+Released under the [Apache License 2.0](./LICENSE) — free to use, fork, and adapt.
