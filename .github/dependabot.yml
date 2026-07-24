@@ -1,0 +1,17 @@
+version: 2
+updates:
+  # npm dependencies. Dev-dependency bumps are grouped into one PR to cut noise.
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      dev-dependencies:
+        dependency-type: development
+
+  # Keep the GitHub Actions in .github/workflows up to date.
+  - package-ecosystem: github-actions
+    directory: '/'
+    schedule:
+      interval: weekly
