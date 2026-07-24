@@ -1,0 +1,9 @@
+One-click demo seeder (LOCAL ONLY). It runs only on http://localhost — clicking
+it on the deployed site does nothing but show a notice, so a live demo can't be
+polluted. Nothing is ever seeded automatically; this only runs when you click it.
+
+Make a new browser bookmark, name it "Seed demo schedule", and paste the line
+below as its URL. Then run `npm run dev`, open http://localhost:5173/, and click
+the bookmark to load the example.
+
+javascript:(()=>{const h=location.hostname;if(h!=='localhost'&&h!=='127.0.0.1'&&h!=='[::1]'){alert('Demo seed is local-only — run it on http://localhost (npm run dev).');return;}const K='shift-scheduler:v1:current';const n=new Date();const a=new Date(n.getFullYear(),n.getMonth(),n.getDate(),12);a.setDate(a.getDate()-((a.getDay()+6)%7));const p=x=>String(x).padStart(2,'0');const sd=`${a.getFullYear()}-${p(a.getMonth()+1)}-${p(a.getDate())}`;const s=(st,du)=>({kind:'shift',start:st,duration:du});const C={D:s(420,480),M:s(540,480),E:s(900,480),N:s(1380,480),O:{kind:'off'},P:{kind:'pto'},H:{kind:'holiday'},'.':null};const R=[['Priya Sharma','DDDDDOODDDDDOO'],['Marcus Bell','EEEEOOEEEEOOEE'],['Elena Novak','NNNOONNNNNOONN'],['David Okonkwo','MMODDDOOMMDDD.'],['Sofia Ramirez','DDPPDDODDDDOOH'],['Tom Whitfield','OEEEEEOOEEEEOO']];const pe=[],as={};for(const[nm,pt]of R){const id=crypto.randomUUID();pe.push({id,name:nm});for(let d=0;d<14;d++){const v=C[pt[d]];if(v)as[`${id}:${d}`]=v;}}localStorage.setItem(K,JSON.stringify({version:1,startDate:sd,weekCount:2,people:pe,assignments:as}));location.reload();})();

@@ -4,7 +4,8 @@ import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage', 'node_modules'] },
+  // scripts/ holds standalone browser snippets (console/bookmarklet), not app code.
+  { ignores: ['dist', 'coverage', 'node_modules', 'scripts'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
