@@ -3,3 +3,5 @@ coverage
 node_modules
 package-lock.json
 scripts/seed-demo.bookmarklet.txt
+# Google Search Console verification file — must be served byte-for-byte.
+public/google*.html
