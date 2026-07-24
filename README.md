@@ -35,24 +35,24 @@ lives in your browser.
 
 - 🧑‍🤝‍🧑 **Built for small teams**: a café, a clinic, a front desk, a ward, a shop floor.
 - 🖨️ **Print-first**: what's on screen is what prints; the PDF isn't a separate export.
-- 🔒 **Yours only**: no login, no cloud, no tracking. It just saves to your browser.
+- 🔒 **Yours only**: no login, no cloud, no cookies. Your schedule never leaves your browser.
 - ⚡ **Quick to fill**: reusable presets, click-to-paint, and proper undo/redo.
 
 ## What it does
 
-| | |
-|---|---|
-| **One or two weeks** | Pick a Monday and build a single week or a full fortnight. |
-| **Shifts as start + length** | You choose when a shift starts and how long it runs, so an overnight (11 PM → 7 AM) is easy to enter and the hours always add up. |
-| **Off, PTO, holiday** | Mark a day as time off instead of a shift. |
-| **Presets** | Save the shifts you use all the time Day, Evening, Night, whatever you like and drop them in with a click. They're fully editable and stick around between schedules. |
-| **Paint them in** *(on desktop)* | Pick a preset, then click across the grid to fill cells with it. |
-| **Undo and redo** | The usual ⌘Z / Ctrl+Z. Whatever you change flashes and scrolls into view, so you don't lose your spot. |
-| **An hours page** | A second page adds up hours per person per week, the fortnight total, and off/PTO/holiday counts, with a blank Notes column for sign-off by hand. |
-| **Color or black & white** | Color-code shifts by time of day, or switch to B&W for a clean print on any office printer. |
-| **Print to PDF** | The grid is page one, the hours summary is page two print double-sided for a single sheet. The file is named with your title and the date. |
-| **Works on a phone** | A card layout for editing on the go. |
-| **Saves itself, works offline** | Everything is kept in your browser and there's nothing to sign into. |
+|                                  |                                                                                                                                                                       |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **One or two weeks**             | Pick a Monday and build a single week or a full fortnight.                                                                                                            |
+| **Shifts as start + length**     | You choose when a shift starts and how long it runs, so an overnight (11 PM → 7 AM) is easy to enter and the hours always add up.                                     |
+| **Off, PTO, holiday**            | Mark a day as time off instead of a shift.                                                                                                                            |
+| **Presets**                      | Save the shifts you use all the time Day, Evening, Night, whatever you like and drop them in with a click. They're fully editable and stick around between schedules. |
+| **Paint them in** _(on desktop)_ | Pick a preset, then click across the grid to fill cells with it.                                                                                                      |
+| **Undo and redo**                | The usual ⌘Z / Ctrl+Z. Whatever you change flashes and scrolls into view, so you don't lose your spot.                                                                |
+| **An hours page**                | A second page adds up hours per person per week, the fortnight total, and off/PTO/holiday counts, with a blank Notes column for sign-off by hand.                     |
+| **Color or black & white**       | Color-code shifts by time of day, or switch to B&W for a clean print on any office printer.                                                                           |
+| **Print to PDF**                 | The grid is page one, the hours summary is page two print double-sided for a single sheet. The file is named with your title and the date.                            |
+| **Works on a phone**             | A card layout for editing on the go.                                                                                                                                  |
+| **Saves itself, works offline**  | Everything is kept in your browser and there's nothing to sign into.                                                                                                  |
 
 <table>
 <tr>
@@ -73,7 +73,7 @@ lives in your browser.
 5. **Adjust your presets** any time with **Presets…** rename them, change their times, add new ones, or reset to the defaults.
 6. **Add a title** if you want one (click above the grid). It shows on the printout and in the PDF's file name.
 7. **Check the hours** under **View → Summary**.
-8. **Print** with **Print / PDF**, then choose *Save as PDF* (A4 landscape). Page one is the grid, page two is the summary.
+8. **Print** with **Print / PDF**, then choose _Save as PDF_ (A4 landscape). Page one is the grid, page two is the summary.
 
 Already built week one? **Copy week 1 → 2** mirrors it so you only tweak the differences.
 
@@ -81,10 +81,12 @@ Already built week one? **Copy week 1 → 2** mirrors it so you only tweak the d
 
 ## Where your data lives
 
-There's no server and nothing is tracked. Your schedule and your presets sit in
-your browser's local storage and stay on your machine. If you clear your browser
-data they'll go with it, so to keep a roster around, hold on to the PDF or just
-rebuild it, it doesn't take long.
+There's no account and no server holding your data. Your schedule and your presets
+sit in your browser's local storage and stay on your machine; nothing you type is
+ever uploaded. The only analytics is a privacy-friendly, cookieless visit count
+(via GoatCounter) that sets no cookies and collects no personal data. If you clear
+your browser data they'll go with it, so to keep a roster around, hold on to the
+PDF or just rebuild it, it doesn't take long.
 
 ## Running your own copy
 
@@ -111,16 +113,16 @@ npm install
 npm run dev        # http://localhost:5173
 ```
 
-| Command | What it does |
-| --- | --- |
-| `npm run dev` | Start the dev server |
-| `npm run build` | Type-check and build to `dist/` |
-| `npm run preview` | Serve the built site locally |
-| `npm test` | Run the tests (pinned to `TZ=America/Toronto`) |
-| `npm run test:watch` | Tests in watch mode |
-| `npm run typecheck` | Type-check only |
-| `npm run lint` | Lint with ESLint |
-| `npm run format` | Format with Prettier |
+| Command              | What it does                                   |
+| -------------------- | ---------------------------------------------- |
+| `npm run dev`        | Start the dev server                           |
+| `npm run build`      | Type-check and build to `dist/`                |
+| `npm run preview`    | Serve the built site locally                   |
+| `npm test`           | Run the tests (pinned to `TZ=America/Toronto`) |
+| `npm run test:watch` | Tests in watch mode                            |
+| `npm run typecheck`  | Type-check only                                |
+| `npm run lint`       | Lint with ESLint                               |
+| `npm run format`     | Format with Prettier                           |
 
 ## Under the hood
 
