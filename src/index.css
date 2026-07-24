@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-paper text-ink antialiased;
+  }
+
+  /* Selects inherit the cell's text color so a shift's label reads on its fill. */
+  select {
+    color: inherit;
+  }
+
+  /* Times must align on the digit when scanning a column for a gap. */
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+}

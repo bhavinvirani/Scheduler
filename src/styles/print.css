@@ -1,0 +1,39 @@
+@page {
+  size: A4 landscape;
+  margin: 10mm;
+}
+
+@media print {
+  /* App chrome (toolbar, buttons) never reaches paper. */
+  .no-print {
+    display: none !important;
+  }
+
+  /* On screen the table scrolls; on paper it must lay out in full, unclipped. */
+  .scroll-x {
+    overflow: visible !important;
+  }
+
+  /* A week block must never split across a page break. */
+  .week-table {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Browsers strip backgrounds by default; shift colors are information here. */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Sticky headers are right for the screen and floating garbage on paper. */
+  .sticky {
+    position: static !important;
+  }
+
+  /* Clean white page — no wasted ink on the app's off-white background. */
+  html,
+  body {
+    background: #fff;
+  }
+}
