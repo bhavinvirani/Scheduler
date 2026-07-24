@@ -1,0 +1,18 @@
+{
+  "name": "Shift Schedule Builder",
+  "short_name": "Schedules",
+  "description": "Build a two-week staff roster and print it to PDF. No account, works offline.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FBFBF9",
+  "theme_color": "#151A21",
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

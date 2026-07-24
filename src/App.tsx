@@ -39,15 +39,17 @@ function ScheduleDocument() {
   const { startDate, weekCount, people } = schedule;
   const lastDayIndex = weekCount * DAYS_PER_WEEK - 1;
 
-  // Resolve the title (custom or default) and use it for the browser tab, which
-  // is also what the printed PDF is titled / named by default.
-  const effectiveTitle =
-    (schedule.title ?? '').trim() || DEFAULT_SCHEDULE_TITLE;
+  // The printed document's title (custom, or the schedule default).
+  const customTitle = (schedule.title ?? '').trim();
+  const effectiveTitle = customTitle || DEFAULT_SCHEDULE_TITLE;
+  // The browser tab — and the title search engines render — shows the app name
+  // until the user names their schedule, which is clearer than the bare default.
+  const tabTitle = customTitle || 'Shift Schedule Builder';
   useEffect(() => {
-    document.title = effectiveTitle;
-  }, [effectiveTitle]);
-  // Stamp the PDF filename with date + time at print, restoring the clean tab title after.
-  usePrintFilename(effectiveTitle);
+    document.title = tabTitle;
+  }, [tabTitle]);
+  // Stamp the PDF filename with date + time at print; restore the tab title after.
+  usePrintFilename(effectiveTitle, tabTitle);
 
   return (
     <main className="mx-auto max-w-[1400px] px-4 py-6 md:px-6">

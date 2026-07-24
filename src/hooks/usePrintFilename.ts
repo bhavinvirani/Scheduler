@@ -12,20 +12,26 @@ function timestamp(): string {
 
 /**
  * The browser's "Save as PDF" dialog names the file after `document.title`. Keep
- * the tab showing the clean title day-to-day, but stamp the title with the date
- * and time only while printing — so the saved file is e.g.
- * "Front Desk — 2026-07-24 14-30.pdf" and each export is uniquely named.
+ * the tab showing its usual title day-to-day, but stamp it with the date and time
+ * only while printing — so the saved file is e.g. "Front Desk — 2026-07-24 14-30.pdf"
+ * and each export is uniquely named. `restoreTitle` is what the tab returns to
+ * afterward (which may differ from the filename, e.g. the app name when untitled).
  */
-export function usePrintFilename(title: string): void {
-  const titleRef = useRef(title);
-  titleRef.current = title;
+export function usePrintFilename(
+  fileTitle: string,
+  restoreTitle: string = fileTitle,
+): void {
+  const fileRef = useRef(fileTitle);
+  fileRef.current = fileTitle;
+  const restoreRef = useRef(restoreTitle);
+  restoreRef.current = restoreTitle;
 
   useEffect(() => {
     const before = () => {
-      document.title = `${titleRef.current} — ${timestamp()}`;
+      document.title = `${fileRef.current} — ${timestamp()}`;
     };
     const after = () => {
-      document.title = titleRef.current;
+      document.title = restoreRef.current;
     };
     window.addEventListener('beforeprint', before);
     window.addEventListener('afterprint', after);

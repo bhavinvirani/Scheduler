@@ -2,17 +2,126 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Relative href so the icon resolves under any GitHub Pages subpath. -->
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Primary meta -->
+    <title>
+      Shift Schedule Builder — Free Staff Roster Maker, Print to PDF
+    </title>
     <meta
       name="description"
-      content="Build bi-weekly shift schedules and print them to PDF. No account, no server — your data stays in your browser."
+      content="A free, offline shift scheduler. Build a two-week staff roster (rota) in your browser and print it straight to PDF. No sign-up, no server — your data stays on your device."
     />
-    <title>Shift Schedule Builder</title>
+    <meta
+      name="keywords"
+      content="shift scheduler, staff roster maker, rota maker, employee schedule, work schedule template, shift planner, print schedule to PDF, free rota template, staff scheduling app"
+    />
+    <meta name="author" content="Bhavin Virani" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#151A21" />
+    <link rel="canonical" href="https://bhavinvirani.github.io/Scheduler/" />
+
+    <!-- Icons & manifest. Relative hrefs so they resolve under any Pages subpath. -->
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="apple-touch-icon" href="./favicon.svg" />
+    <link rel="manifest" href="./site.webmanifest" />
+
+    <!-- Open Graph (Facebook, LinkedIn, Slack, Discord …) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Shift Schedule Builder" />
+    <meta
+      property="og:title"
+      content="Shift Schedule Builder — Free Staff Roster Maker"
+    />
+    <meta
+      property="og:description"
+      content="Build a two-week staff roster in your browser and print it to PDF. No account, no server, works offline."
+    />
+    <meta
+      property="og:url"
+      content="https://bhavinvirani.github.io/Scheduler/"
+    />
+    <meta
+      property="og:image"
+      content="https://bhavinvirani.github.io/Scheduler/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="The Shift Schedule Builder grid, color-coded by shift time, with an hours summary."
+    />
+
+    <!-- Twitter / X card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Shift Schedule Builder — Free Staff Roster Maker"
+    />
+    <meta
+      name="twitter:description"
+      content="Build a two-week staff roster in your browser and print it to PDF. No account, no server, works offline."
+    />
+    <meta
+      name="twitter:image"
+      content="https://bhavinvirani.github.io/Scheduler/og-image.png"
+    />
+
+    <!-- Structured data: helps Google understand this is a free web app. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Shift Schedule Builder",
+        "url": "https://bhavinvirani.github.io/Scheduler/",
+        "description": "A free, offline web app for building two-week staff shift schedules and printing them to PDF. No account or server required.",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any (web browser)",
+        "browserRequirements": "Requires JavaScript",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "author": { "@type": "Person", "name": "Bhavin Virani" },
+        "license": "https://www.apache.org/licenses/LICENSE-2.0",
+        "featureList": [
+          "Two-week shift grid",
+          "Reusable shift presets and one-tap fill",
+          "Undo and redo",
+          "Hours summary per person",
+          "Color or black-and-white printing",
+          "Print to PDF",
+          "Works offline, no account"
+        ],
+        "screenshot": "https://bhavinvirani.github.io/Scheduler/og-image.png"
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <div
+        style="
+          max-width: 40rem;
+          margin: 3rem auto;
+          padding: 0 1.5rem;
+          font-family: system-ui, sans-serif;
+          line-height: 1.6;
+          color: #151a21;
+        "
+      >
+        <h1>Shift Schedule Builder</h1>
+        <p>
+          A free, offline tool for building a two-week staff roster and printing
+          it to PDF — no account and no server. Please enable JavaScript to use
+          it.
+        </p>
+        <p>
+          It's open source. See the
+          <a href="https://github.com/bhavinvirani/Scheduler"
+            >source code and documentation on GitHub</a
+          >.
+        </p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
