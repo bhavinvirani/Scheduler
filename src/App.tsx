@@ -12,6 +12,7 @@ import { ViewProvider, useView } from './state/ViewContext.tsx';
 import { PresetsProvider } from './state/PresetsContext.tsx';
 import { PaintProvider } from './state/PaintContext.tsx';
 import { RulesProvider } from './state/RulesContext.tsx';
+import { BackupProvider } from './state/BackupContext.tsx';
 import { useViolations } from './state/useViolations.ts';
 import { decodeShare } from './lib/shareCodec.ts';
 import { usePrintFilename } from './hooks/usePrintFilename.ts';
@@ -21,6 +22,7 @@ import { MobileSchedule } from './components/MobileSchedule.tsx';
 import { PaintBar } from './components/PaintBar.tsx';
 import { UndoFlash } from './components/UndoFlash.tsx';
 import { WarningsPanel } from './components/WarningsPanel.tsx';
+import { BackupBanner } from './components/BackupBanner.tsx';
 import { SummaryView } from './components/SummaryView.tsx';
 import { SharedRosterView } from './components/SharedRosterView.tsx';
 
@@ -79,6 +81,9 @@ function ScheduleDocument() {
 
   return (
     <main className="mx-auto max-w-[1400px] px-4 py-6 md:px-6">
+      {/* Backup restore / newer-file prompts — screen only, above everything. */}
+      <BackupBanner />
+
       {/* Rule warnings — screen only, above the document. */}
       <WarningsPanel violations={violations} />
 
@@ -172,11 +177,13 @@ export default function App() {
           <PaintProvider>
             <ScheduleProvider>
               <RulesProvider>
-                <div className="min-h-screen bg-paper font-sans text-ink">
-                  <Toolbar />
-                  <ScheduleDocument />
-                  <UndoFlash />
-                </div>
+                <BackupProvider>
+                  <div className="min-h-screen bg-paper font-sans text-ink">
+                    <Toolbar />
+                    <ScheduleDocument />
+                    <UndoFlash />
+                  </div>
+                </BackupProvider>
               </RulesProvider>
             </ScheduleProvider>
           </PaintProvider>

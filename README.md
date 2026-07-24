@@ -42,21 +42,22 @@ lives in your browser.
 
 ## What it does
 
-|                                  |                                                                                                                                                                         |
-| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **One or two weeks**             | Pick a Monday and build a single week or a full fortnight.                                                                                                              |
-| **Shifts as start + length**     | You choose when a shift starts and how long it runs, so an overnight (11 PM → 7 AM) is easy to enter and the hours always add up.                                       |
-| **Off, PTO, holiday**            | Mark a day as time off instead of a shift.                                                                                                                              |
-| **Rules and warnings**           | Turn on your own checks (minimum coverage, rest between shifts, weekly hours, days in a row, and more) and the roster flags whatever breaks them, on screen only.       |
-| **Presets**                      | Save the shifts you use all the time (Day, Evening, Night, whatever you like) and drop them in with a click. They're fully editable and stick around between schedules. |
-| **Paint them in** _(on desktop)_ | Pick a preset, then click across the grid to fill cells with it.                                                                                                        |
-| **Undo and redo**                | The usual ⌘Z / Ctrl+Z. Whatever you change flashes and scrolls into view, so you don't lose your spot.                                                                  |
-| **An hours page**                | A second page adds up hours per person per week, the fortnight total, and off/PTO/holiday counts, with a blank Notes column for sign-off by hand.                       |
-| **Color or black & white**       | Color-code shifts by time of day, or switch to B&W for a clean print on any office printer.                                                                             |
-| **Print to PDF**                 | The grid is page one and the hours summary is page two, so you can print double-sided for a single sheet. The file is named with your title and the date.               |
-| **Works on a phone**             | A card layout for editing on the go.                                                                                                                                    |
-| **Saves itself, works offline**  | Everything is kept in your browser and there's nothing to sign into.                                                                                                    |
-| **Share a view-only link**       | Send a link and your team opens a read-only roster they can view and print. No account or app, and it never touches their own saved schedule.                           |
+|                                  |                                                                                                                                                                                               |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **One or two weeks**             | Pick a Monday and build a single week or a full fortnight.                                                                                                                                    |
+| **Shifts as start + length**     | You choose when a shift starts and how long it runs, so an overnight (11 PM → 7 AM) is easy to enter and the hours always add up.                                                             |
+| **Off, PTO, holiday**            | Mark a day as time off instead of a shift.                                                                                                                                                    |
+| **Rules and warnings**           | Turn on your own checks (minimum coverage, rest between shifts, weekly hours, days in a row, and more) and the roster flags whatever breaks them, on screen only.                             |
+| **Backup and restore**           | Save everything to a file you keep and restore it on any browser or device. On Chrome/Edge, connect a file that auto-saves; drop it in a synced folder for cross-device. Nothing is uploaded. |
+| **Presets**                      | Save the shifts you use all the time (Day, Evening, Night, whatever you like) and drop them in with a click. They're fully editable and stick around between schedules.                       |
+| **Paint them in** _(on desktop)_ | Pick a preset, then click across the grid to fill cells with it.                                                                                                                              |
+| **Undo and redo**                | The usual ⌘Z / Ctrl+Z. Whatever you change flashes and scrolls into view, so you don't lose your spot.                                                                                        |
+| **An hours page**                | A second page adds up hours per person per week, the fortnight total, and off/PTO/holiday counts, with a blank Notes column for sign-off by hand.                                             |
+| **Color or black & white**       | Color-code shifts by time of day, or switch to B&W for a clean print on any office printer.                                                                                                   |
+| **Print to PDF**                 | The grid is page one and the hours summary is page two, so you can print double-sided for a single sheet. The file is named with your title and the date.                                     |
+| **Works on a phone**             | A card layout for editing on the go.                                                                                                                                                          |
+| **Saves itself, works offline**  | Everything is kept in your browser and there's nothing to sign into.                                                                                                                          |
+| **Share a view-only link**       | Send a link and your team opens a read-only roster they can view and print. No account or app, and it never touches their own saved schedule.                                                 |
 
 <table>
 <tr>
@@ -88,12 +89,22 @@ Already built week one? **Copy week 1 → 2** mirrors it so you only tweak the d
 
 ## Where your data lives
 
-There's no account and no server holding your data. Your schedule and your presets
-sit in your browser's local storage and stay on your machine; nothing you type is
-ever uploaded. The only analytics is a privacy-friendly, cookieless visit count
-(via GoatCounter) that sets no cookies and collects no personal data. If you clear
-your browser data they'll go with it, so to keep a roster around, hold on to the
-PDF or just rebuild it, it doesn't take long.
+There's no account and no server holding your data. Your schedule, presets, and
+rules sit in your browser's local storage and stay on your machine; nothing you
+type is ever uploaded. The only analytics is a privacy-friendly, cookieless visit
+count (via GoatCounter) that sets no cookies and collects no personal data.
+
+Because it lives in the browser, clearing your browser data (or switching to a new
+browser or machine) would take it with it. So there's a **Backup** button:
+
+- **Download backup / Restore from file** (every browser): save everything to one
+  JSON file you keep, and load it back on any browser or device. Keep the file in
+  Drive, an email to yourself, or a USB stick.
+- **Connect a file** (Chrome and Edge): pick a file once and the app auto-saves to
+  it on every change. Put that file in a synced folder (Drive, Dropbox, iCloud) and
+  your setup follows you across devices, still with nothing uploaded to a server.
+  On a brand-new browser, one click on **Open a backup** points it at your file and
+  you're back.
 
 ## Running your own copy
 

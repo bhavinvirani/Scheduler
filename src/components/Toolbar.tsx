@@ -7,6 +7,7 @@ import { useUndoRedoShortcuts } from '../hooks/useUndoRedoShortcuts.ts';
 import { ConfirmDialog } from './ConfirmDialog.tsx';
 import { PresetManager } from './PresetManager.tsx';
 import { RulesManager } from './RulesManager.tsx';
+import { BackupManager } from './BackupManager.tsx';
 import { PrintDialog } from './PrintDialog.tsx';
 import { ShareModal } from './ShareModal.tsx';
 
@@ -40,6 +41,7 @@ export function Toolbar() {
   const [confirmClearOpen, setConfirmClearOpen] = useState(false);
   const [presetsOpen, setPresetsOpen] = useState(false);
   const [rulesOpen, setRulesOpen] = useState(false);
+  const [backupOpen, setBackupOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [printOpen, setPrintOpen] = useState(false);
 
@@ -234,6 +236,14 @@ export function Toolbar() {
             </button>
             <button
               type="button"
+              onClick={() => setBackupOpen(true)}
+              title="Save or restore a backup file"
+              className={secondaryButton}
+            >
+              Backup…
+            </button>
+            <button
+              type="button"
               onClick={() => dispatch({ type: 'COPY_WEEK_1_TO_2' })}
               disabled={!canCopyWeek}
               title={
@@ -293,6 +303,8 @@ export function Toolbar() {
       <PresetManager open={presetsOpen} onClose={() => setPresetsOpen(false)} />
 
       <RulesManager open={rulesOpen} onClose={() => setRulesOpen(false)} />
+
+      <BackupManager open={backupOpen} onClose={() => setBackupOpen(false)} />
 
       <PrintDialog
         open={printOpen}

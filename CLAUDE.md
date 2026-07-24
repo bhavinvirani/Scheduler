@@ -50,6 +50,17 @@ schedule into the URL hash (`#r=…`) with a compact, dependency-free codec, and
 (works on plain GitHub Pages) and never writes to `localStorage`; a decoded link
 is untrusted and re-validated with `isValidSchedule`.
 
+**Backup** keeps `localStorage` primary and mirrors everything to a file the user
+controls (nothing uploaded). `src/lib/backupCodec.ts` is the pure format
+(`buildBackup`/`serializeBackup`/`parseBackup`, versioned + re-validated) plus the
+pure `decideBoot`/`isFileNewer` logic; `src/state/backupStore.ts` reads/applies the
+three stores + a `:meta` savedAt (restore = write keys + `location.reload()`).
+`BackupContext` owns a File System Access handle persisted in IndexedDB
+(`src/lib/fileBackup.ts`) and auto-saves on change (Chromium); `BackupManager`
+adds a universal Download/Restore fallback; `BackupBanner` runs `decideBoot` on
+mount (restore-file / offer-restore / offer-newer / first-run). All of it is
+screen-only.
+
 **Rules** are user-defined checks in their own store, mirroring presets:
 `rulesReducer` + `RulesContext` + `usePersistedRules` (key
 `shift-scheduler:v1:rules`), so editing rules never touches the schedule or its
