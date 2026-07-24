@@ -3,51 +3,9 @@ import type { Dispatch } from 'react';
 import type { Assignment } from '../types.ts';
 import type { Action } from '../state/scheduleReducer.ts';
 import type { DisplayMode } from '../state/DisplayModeContext.tsx';
-import { DEFAULT_SHIFT_DURATION_MINUTES } from '../constants.ts';
-import {
-  assignmentLabel,
-  durationOptions,
-  shiftCategory,
-  startOptions,
-} from '../lib/time.ts';
-
-// Static across every cell — build the 48 start options once, not per render.
-const START_OPTIONS = startOptions();
-
-const STATUS_OPTIONS = [
-  { value: 'empty', label: '—' },
-  { value: 'off', label: 'Off' },
-  { value: 'pto', label: 'PTO' },
-  { value: 'holiday', label: 'Holiday' },
-] as const;
-
-const SHIFT_FILL: Record<ReturnType<typeof shiftCategory>, string> = {
-  day: 'bg-day text-white',
-  evening: 'bg-evening text-white',
-  night: 'bg-night text-white',
-};
-
-/**
- * Background + text color for a cell. In black-and-white mode every cell is
- * white with black text so it prints cleanly and the shift time stays legible;
- * color mode fills shifts by their time of day.
- */
-function fillClass(assignment: Assignment, mode: DisplayMode): string {
-  if (mode === 'mono') {
-    if (assignment.kind === 'shift') return 'bg-white text-ink';
-    if (assignment.kind === 'empty') return 'bg-white text-ink/40';
-    return 'bg-white text-ink/60'; // off / pto / holiday — recessed
-  }
-  if (assignment.kind === 'shift')
-    return SHIFT_FILL[shiftCategory(assignment.start)];
-  if (assignment.kind === 'empty') return 'bg-paper text-ink/40';
-  return 'bg-absent text-ink'; // off / pto / holiday
-}
-
-const selectClass =
-  'w-full cursor-pointer appearance-none bg-transparent px-1.5 py-1 ' +
-  'font-mono text-xs font-medium tabular-nums leading-tight outline-none ' +
-  'focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ink/50';
+import { assignmentLabel } from '../lib/time.ts';
+import { fillClass } from './shiftFill.ts';
+import { ShiftControls } from './ShiftControls.tsx';
 
 interface ShiftCellProps {
   personId: string;
@@ -67,28 +25,6 @@ function ShiftCellComponent({
   displayMode,
   cellLabel,
 }: ShiftCellProps) {
-  const setValue = (value: Assignment) =>
-    dispatch({ type: 'SET_ASSIGNMENT', personId, dayIndex, value });
-
-  const handleStatusOrStart = (raw: string) => {
-    if (raw.startsWith('t:')) {
-      const start = Number(raw.slice(2));
-      // Keep the current length when only the start moves; otherwise default to 8h.
-      const duration =
-        assignment.kind === 'shift'
-          ? assignment.duration
-          : DEFAULT_SHIFT_DURATION_MINUTES;
-      setValue({ kind: 'shift', start, duration });
-    } else if (raw === 'off' || raw === 'pto' || raw === 'holiday') {
-      setValue({ kind: raw });
-    } else {
-      setValue({ kind: 'empty' });
-    }
-  };
-
-  const primaryValue =
-    assignment.kind === 'shift' ? `t:${assignment.start}` : assignment.kind;
-
   return (
     <td
       className={`border border-rule p-0 align-top ${fillClass(assignment, displayMode)}`}
@@ -98,50 +34,15 @@ function ShiftCellComponent({
         {assignmentLabel(assignment)}
       </span>
 
-      {/* Screen: the editable controls. Times come first, then statuses. */}
-      <div className="flex flex-col print:hidden">
-        <select
-          aria-label={`${cellLabel} — start time or status`}
-          value={primaryValue}
-          onChange={(event) => handleStatusOrStart(event.target.value)}
-          className={selectClass}
-        >
-          <optgroup label="Start time">
-            {START_OPTIONS.map((option) => (
-              <option key={option.value} value={`t:${option.value}`}>
-                {option.label}
-              </option>
-            ))}
-          </optgroup>
-          <optgroup label="Status">
-            {STATUS_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </optgroup>
-        </select>
-
-        {assignment.kind === 'shift' && (
-          <select
-            aria-label={`${cellLabel} — shift length`}
-            value={assignment.duration}
-            onChange={(event) =>
-              setValue({
-                kind: 'shift',
-                start: assignment.start,
-                duration: Number(event.target.value),
-              })
-            }
-            className={`${selectClass} border-t border-black/10`}
-          >
-            {durationOptions(assignment.start).map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        )}
+      {/* Screen: the editable controls. */}
+      <div className="print:hidden">
+        <ShiftControls
+          personId={personId}
+          dayIndex={dayIndex}
+          assignment={assignment}
+          dispatch={dispatch}
+          cellLabel={cellLabel}
+        />
       </div>
     </td>
   );

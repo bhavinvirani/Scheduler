@@ -1,5 +1,6 @@
 import { DAYS_PER_WEEK } from '../constants.ts';
 import { addDays, formatDateRange, formatDayHeader } from '../lib/dates.ts';
+import { duplicateNameKeys, normalizeName } from '../lib/people.ts';
 import { useSchedule } from '../state/ScheduleContext.tsx';
 import { useDisplayMode } from '../state/DisplayModeContext.tsx';
 import { PersonRow } from './PersonRow.tsx';
@@ -9,18 +10,6 @@ interface WeekTableProps {
   weekIndex: number;
 }
 
-/** Names (normalized) that more than one person shares — used to flag duplicates. */
-function duplicateNames(names: string[]): Set<string> {
-  const counts = new Map<string, number>();
-  for (const raw of names) {
-    const key = raw.trim().toLowerCase();
-    if (key) counts.set(key, (counts.get(key) ?? 0) + 1);
-  }
-  const dupes = new Set<string>();
-  for (const [key, count] of counts) if (count > 1) dupes.add(key);
-  return dupes;
-}
-
 export function WeekTable({ weekIndex }: WeekTableProps) {
   const { schedule, dispatch } = useSchedule();
   const { displayMode } = useDisplayMode();
@@ -28,8 +17,8 @@ export function WeekTable({ weekIndex }: WeekTableProps) {
   const firstDay = weekIndex * DAYS_PER_WEEK;
   const weekStart = addDays(startDate, firstDay);
   const weekEnd = addDays(startDate, firstDay + DAYS_PER_WEEK - 1);
-  const dupes = duplicateNames(people.map((p) => p.name));
-  const isDuplicate = (name: string) => dupes.has(name.trim().toLowerCase());
+  const dupes = duplicateNameKeys(people.map((p) => p.name));
+  const isDuplicate = (name: string) => dupes.has(normalizeName(name));
 
   return (
     <section className="week-table">

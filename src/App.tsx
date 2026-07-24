@@ -3,8 +3,11 @@ import { addDays, formatDateRange } from './lib/dates.ts';
 import { DAYS_PER_WEEK, DEFAULT_SCHEDULE_TITLE } from './constants.ts';
 import { ScheduleProvider, useSchedule } from './state/ScheduleContext.tsx';
 import { DisplayModeProvider } from './state/DisplayModeContext.tsx';
+import { ViewProvider, useView } from './state/ViewContext.tsx';
 import { Toolbar } from './components/Toolbar.tsx';
 import { WeekTable } from './components/WeekTable.tsx';
+import { MobileSchedule } from './components/MobileSchedule.tsx';
+import { SummaryView } from './components/SummaryView.tsx';
 
 function EmptyState() {
   const { dispatch } = useSchedule();
@@ -27,6 +30,7 @@ function EmptyState() {
 
 function ScheduleDocument() {
   const { schedule, dispatch } = useSchedule();
+  const { view } = useView();
   const { startDate, weekCount, people } = schedule;
   const lastDayIndex = weekCount * DAYS_PER_WEEK - 1;
 
@@ -40,12 +44,11 @@ function ScheduleDocument() {
 
   return (
     <main className="mx-auto max-w-[1400px] px-4 py-6 md:px-6">
-      <header className="mb-5">
-        {/* Print: the resolved title as the document heading. */}
+      {/* Page-1 document title: shown on the Grid view and always in print. */}
+      <header className={`mb-5 ${view === 'grid' ? '' : 'hidden'} print:block`}>
         <h2 className="hidden text-lg font-semibold print:block">
           {effectiveTitle}
         </h2>
-        {/* Screen: editable and optional — leave it blank for the default. */}
         <input
           type="text"
           value={schedule.title ?? ''}
@@ -64,11 +67,26 @@ function ScheduleDocument() {
       {people.length === 0 ? (
         <EmptyState />
       ) : (
-        <div className="space-y-8">
-          {Array.from({ length: weekCount }, (_, weekIndex) => (
-            <WeekTable key={weekIndex} weekIndex={weekIndex} />
-          ))}
-        </div>
+        <>
+          {/* Schedule view. Prints as page 1 regardless of the on-screen tab. */}
+          <section className={`${view === 'grid' ? '' : 'hidden'} print:block`}>
+            <div className="hidden space-y-8 md:block print:block">
+              {Array.from({ length: weekCount }, (_, weekIndex) => (
+                <WeekTable key={weekIndex} weekIndex={weekIndex} />
+              ))}
+            </div>
+            <div className="md:hidden print:hidden">
+              <MobileSchedule />
+            </div>
+          </section>
+
+          {/* Hours summary. Prints on a fresh page (page 2) after the schedule. */}
+          <section
+            className={`break-before-page ${view === 'summary' ? '' : 'hidden'} print:block`}
+          >
+            <SummaryView />
+          </section>
+        </>
       )}
     </main>
   );
@@ -77,12 +95,14 @@ function ScheduleDocument() {
 export default function App() {
   return (
     <DisplayModeProvider>
-      <ScheduleProvider>
-        <div className="min-h-screen bg-paper font-sans text-ink">
-          <Toolbar />
-          <ScheduleDocument />
-        </div>
-      </ScheduleProvider>
+      <ViewProvider>
+        <ScheduleProvider>
+          <div className="min-h-screen bg-paper font-sans text-ink">
+            <Toolbar />
+            <ScheduleDocument />
+          </div>
+        </ScheduleProvider>
+      </ViewProvider>
     </DisplayModeProvider>
   );
 }
