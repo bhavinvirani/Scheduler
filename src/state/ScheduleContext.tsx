@@ -14,6 +14,7 @@ interface ScheduleContextValue {
   redo: () => void;
   flashedKeys: ReadonlySet<string>;
   flashNonce: number;
+  flashAction: 'undo' | 'redo' | null;
   /** True in the shared "view-only" mode: components render static, non-editable. */
   readOnly: boolean;
 }
@@ -31,6 +32,7 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
     redo,
     flashedKeys,
     flashNonce,
+    flashAction,
   } = usePersistedSchedule();
   const value = useMemo(
     () => ({
@@ -42,9 +44,10 @@ export function ScheduleProvider({ children }: { children: ReactNode }) {
       redo,
       flashedKeys,
       flashNonce,
+      flashAction,
       readOnly: false,
     }),
-    [schedule, dispatch, canUndo, canRedo, undo, redo, flashedKeys, flashNonce],
+    [schedule, dispatch, canUndo, canRedo, undo, redo, flashedKeys, flashNonce, flashAction],
   );
   return (
     <ScheduleContext.Provider value={value}>
@@ -77,6 +80,7 @@ export function ReadOnlyScheduleProvider({
       redo: () => {},
       flashedKeys: NO_FLASH,
       flashNonce: 0,
+      flashAction: null,
       readOnly: true,
     }),
     [schedule],

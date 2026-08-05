@@ -62,6 +62,7 @@ export interface PersistedSchedule {
   /** Assignment keys the last undo/redo touched, and a bump-on-each nonce. */
   flashedKeys: ReadonlySet<string>;
   flashNonce: number;
+  flashAction: 'undo' | 'redo' | null;
 }
 
 /**
@@ -81,7 +82,9 @@ export function usePersistedSchedule(): PersistedSchedule {
   const [flash, setFlash] = useState<{
     keys: ReadonlySet<string>;
     nonce: number;
-  }>({ keys: new Set(), nonce: 0 });
+    /** What the user just did — drives the aria-live announcement. */
+    action: 'undo' | 'redo' | null;
+  }>({ keys: new Set(), nonce: 0, action: null });
 
   useEffect(() => {
     const handle = window.setTimeout(() => {
@@ -106,7 +109,7 @@ export function usePersistedSchedule(): PersistedSchedule {
     if (current.past.length === 0) return;
     const target = current.past[current.past.length - 1]!;
     const keys = changedAssignmentKeys(current.present, target);
-    setFlash((prev) => ({ keys: new Set(keys), nonce: prev.nonce + 1 }));
+    setFlash((prev) => ({ keys: new Set(keys), nonce: prev.nonce + 1, action: 'undo' }));
     dispatch({ type: 'UNDO' });
   }, []);
 
@@ -115,7 +118,7 @@ export function usePersistedSchedule(): PersistedSchedule {
     if (current.future.length === 0) return;
     const target = current.future[0]!;
     const keys = changedAssignmentKeys(current.present, target);
-    setFlash((prev) => ({ keys: new Set(keys), nonce: prev.nonce + 1 }));
+    setFlash((prev) => ({ keys: new Set(keys), nonce: prev.nonce + 1, action: 'redo' }));
     dispatch({ type: 'REDO' });
   }, []);
 
@@ -128,5 +131,6 @@ export function usePersistedSchedule(): PersistedSchedule {
     redo,
     flashedKeys: flash.keys,
     flashNonce: flash.nonce,
+    flashAction: flash.action,
   };
 }

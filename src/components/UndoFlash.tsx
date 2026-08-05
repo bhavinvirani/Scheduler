@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSchedule } from '../state/ScheduleContext.tsx';
 
 // Must outlast the longest cellFlash animation in index.css — 1.1s normally,
@@ -13,10 +13,18 @@ const FLASH_MS = 1700;
  * threading through the memoized cell tree. Renders nothing.
  */
 export function UndoFlash() {
-  const { flashedKeys, flashNonce } = useSchedule();
+  const { flashedKeys, flashNonce, flashAction } = useSchedule();
+  const [liveMessage, setLiveMessage] = useState('');
 
   useEffect(() => {
     if (flashNonce === 0 || flashedKeys.size === 0) return;
+
+    // ponytail: plain "Undo"/"Redo" plus cell count; enough for SR users
+    const label = flashAction === 'redo' ? 'Redo' : 'Undo';
+    const n = flashedKeys.size;
+    setLiveMessage(
+      n === 1 ? `${label}: 1 cell updated` : `${label}: ${n} cells updated`,
+    );
 
     const els: HTMLElement[] = [];
     flashedKeys.forEach((key) => {
@@ -40,7 +48,11 @@ export function UndoFlash() {
       for (const el of els) el.classList.remove('cell-flash');
     }, FLASH_MS);
     return () => window.clearTimeout(timer);
-  }, [flashNonce, flashedKeys]);
+  }, [flashNonce, flashedKeys, flashAction]);
 
-  return null;
+  return (
+    <div className="sr-only" aria-live="polite" aria-atomic="true">
+      {liveMessage}
+    </div>
+  );
 }
